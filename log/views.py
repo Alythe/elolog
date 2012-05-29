@@ -42,6 +42,7 @@ def graph_log(request, log_id):
   else:
     data = ""
 
+  return render_to_response('graph.html', RequestContext(request, {'log': log, 'js_data': data, 'log_empty': log_empty}))
 
 def public_graph_log(request, log_hash):
   log = get_object_or_404(Log, public_hash__exact=log_hash)
