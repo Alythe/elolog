@@ -18,7 +18,7 @@ urlpatterns = patterns('',
     url(r'^(?P<log_id>\d+)/edit/$', 'log.views.edit_log'),
     url(r'^(?P<log_id>\d+)/delete/$', 'log.views.delete_log'),
     url(r'^public/(?P<log_hash>\w+)/$', 'log.views.public_view'),
-    url(r'^public/(?P<log_hash>\w+)/graph$', 'log.views.public_graph'),
+    url(r'^public/(?P<log_hash>\w+)/graph$', 'log.views.public_graph_log'),
 
     url(r'^(?P<log_id>\d+)/edit/(?P<item_id>\d+)/$', 'log.views.edit_item'),
     url(r'^(?P<log_id>\d+)/delete/(?P<item_id>\d+)/$', 'log.views.delete_item'),
