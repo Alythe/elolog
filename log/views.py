@@ -49,7 +49,7 @@ def graph_log(request, log_id, public=False):
   else:
     data = ""
 
-  return render_to_response('graph.html', RequestContext(request, {'log': log, 'js_data': data, 'log_empty': log_empty, 'log_id': log_id}))
+  return render_to_response('graph.html', RequestContext(request, {'log': log, 'js_data': data, 'log_empty': log_empty, 'log_id': log_id, 'is_public': public}))
 
 def export_log(request, log_id):
   if not request.user.is_authenticated():
