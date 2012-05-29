@@ -36,18 +36,33 @@ class Log(models.Model):
   summoner_name = models.CharField(max_length = 48)
   region = models.CharField(max_length=4, choices=REGION_CHOICES)
   initial_elo = models.PositiveIntegerField(default=0)
-  current_elo = models.PositiveIntegerField(default=0)
-  games_won = models.PositiveIntegerField(default=0)
-  games_lost = models.PositiveIntegerField(default=0)
+  initial_games_won = models.PositiveIntegerField(default=0)
+  initial_games_lost = models.PositiveIntegerField(default=0)
   public = models.BooleanField(default=False)
   public_hash = models.CharField(max_length = 10, default = "", blank=True)
 
   def total_games(self):
-    return self.games_won + self.games_lost
+    return self.games_won() + self.games_lost()
+
+  def games_won(self):
+    count = self.initial_games_won
+    for item in self.logitem_set.all():
+      if item.win:
+        count += 1
+
+    return count
+
+  def games_lost(self):
+    count = self.initial_games_lost
+    for item in self.logitem_set.all():
+      if not item.win:
+        count += 1
+
+    return count
 
   def win_loss_ratio(self):
-    if self.games_won > 0 and self.games_lost > 0:
-      return '%.3f' % (float(self.games_won) / float(self.games_lost),)
+    if self.games_won() > 0 and self.games_lost() > 0:
+      return '%.3f' % (float(self.games_won()) / float(self.games_lost()),)
     else:
       return 0
 
@@ -61,6 +76,12 @@ class Log(models.Model):
       return "http://%s/public/%s" % (domain, self.public_hash)
     else:
       return ""
+
+  def current_elo(self):
+    if self.logitem_set.count() == 0:
+      return self.initial_elo
+    else:
+      return self.logitem_set.latest().elo
 
   def __unicode__(self):
     return self.summoner_name

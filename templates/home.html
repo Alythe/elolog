@@ -30,7 +30,7 @@
           {% for log in log_list %}
           <tr id="{{ log.id }}">
             <td>{{ log.summoner_name }}</td>
-            <td>{{ log.region }}</td>
+            <td>{{ log.get_region_display }}</td>
             <td>{{ log.current_elo }}</td>
             <td>{{ log.total_games }}</td>
             <td>{{ log.win_loss_ratio }}</td>

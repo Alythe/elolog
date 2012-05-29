@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 class LogForm(ModelForm):
   class Meta:
     model = Log
-    fields = ('summoner_name', 'region', 'initial_elo', 'games_won', 'games_lost')
+    fields = ('summoner_name', 'region', 'initial_elo', 'initial_games_won', 'initial_games_lost')
 
 class LogItemForm(ModelForm):
   class Meta:
