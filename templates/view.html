@@ -81,10 +81,12 @@
             <i class="icon-list-alt"></i>
             Show Graphs
           </a>
+          {% if not is_public %}
           <a class="btn" href="export">
             <i class="icon-share"></i>
             Export as CSV
           </a>
+          {% endif %}
 
           {% if not is_public %}
           <a class="btn btn-danger pull-right" data-toggle="modal" href="#md-confirm-delete">
