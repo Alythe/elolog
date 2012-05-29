@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
+from django.contrib.sites.models import Site
 import hashlib
 
 # Create your models here.
@@ -56,7 +57,8 @@ class Log(models.Model):
       self.save()
     
     if self.public:
-      return "http://elolog.com/public/%s" % self.public_hash
+      domain = Site.objects.get_current().domain
+      return "http://%s/public/%s" % (domain, self.public_hash)
     else:
       return ""
 
