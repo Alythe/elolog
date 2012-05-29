@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}- Activate{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Email activation</h1>
+</div>
+
+{% if user %}
+<div class="alert alert-success">Account activated! Go ahead and <a href="{% url auth_login %}">log in</a>!</div>
+{% else %}
+<div class="alert alert-error">Account activation failed!</div>
+{% endif %}
+
+{% endblock %}

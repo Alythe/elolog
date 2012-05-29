@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>ELOlog{% block title %}{% endblock %}</title>
+  <link href="{{ STATIC_URL }}css/bootstrap.min.css" media="screen" rel="stylesheet" />
+  <link href="{{ STATIC_URL }}css/bootstrap-responsive.css" rel="stylesheet" />
+  <link href="{{ STATIC_URL }}css/main.css" rel="stylesheet" />
+  <script src="{{ STATIC_URL }}js/jquery-min.js" /></script>
+  {% block header %}{% endblock %} 
+  <style>   
+    .container .content {
+      background-color: #FFFFFF;
+      border-radius: 0 0 6px 6px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+      margin: 0 -20px;
+      padding: 60px 20px 5px;
+    }
+    
+    .scrollable {
+      overflow: auto;
+    }
+  </style> 
+</head>
+
+<body>
+
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </a>
+        <a class="brand" href="/">ELOlog</a>
+        <a class="btn btn-warning pull-right" href="/logout">
+          Sign out
+        </a>
+        <div class="nav-collapse">
+          <ul class="nav">
+            <li><a href="/">Home</a></li>
+            <li><a href="/about">About</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="row">
+      <div class="{% block page_width %}span10 offset1{% endblock %}">
+        <div class="content">
+        {% block content %}{% endblock %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="{{ STATIC_URL }}js/bootstrap-transition.js"></script>
+  <script src="{{ STATIC_URL }}js/bootstrap-modal.js"></script>
+  <script src="{{ STATIC_URL }}js/bootstrap-dropdown.js"></script>
+  <script src="{{ STATIC_URL }}js/bootstrap-popover.js"></script>
+  <script src="{{ STATIC_URL }}js/bootstrap-button.js"></script>
+
+</body>
+
+</html>

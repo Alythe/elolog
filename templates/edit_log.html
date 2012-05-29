@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}- Edit/New log{% endblock %}
+
+{% block content %}
+        <div class="page-header">
+          <h1>{{ log.summoner_name }}</h1>
+        </div>
+        <form action="" method="POST">
+          {{ form.errors }}
+          {% csrf_token %}
+
+          <div class="fieldWrapper">
+            {{ form.summoner_name.errors }}
+            <label for="id_summoner_name">Summoner Name:</label>
+            {{ form.summoner_name }}
+          </div>
+
+          <div class="fieldWrapper">
+            {{ form.region.errors }}
+            <label for="id_summoner_name">Region:</label>
+            {{ form.region }}
+          </div>
+
+          <div class="fieldWrapper">
+            {{ form.initial_elo.errors }}
+            <label for="id_summoner_name">Inital ELO:</label>
+            <div class="alert">
+              <strong>Warning:</strong> This should be your ELO before you started using ELOlog. A different value may lead to some minor calculation errors.
+            {{ form.initial_elo }}
+            </div>
+          </div>
+
+          <div class="fieldWrapper">
+            {{ form.games_won.errors }}
+            {{ form.games_lost.errors }}
+            <label for="id_summoner_name">Games Won/Lost:</label>
+            <div class="alert">
+              <strong>Warning:</strong> This should be your won/lost games from before you started using ELOlog. Different values may lead to some minor calculation errors. 
+              {{ form.games_won }} / {{ form.games_lost }}
+            </div>
+          </div>
+
+          <input type="submit" class="btn btn-primary" value="Save" />
+
+        </form>
+{% endblock %}

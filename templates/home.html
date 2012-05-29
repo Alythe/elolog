@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}- Home{% endblock %}
+
+{% block content %}
+        <div class="page-header">
+          <h1>Your logs</h1>
+        </div>
+        <a href="/accounts/password/change/">Change password</a>
+        <hr/>
+        {% if not log_list %}
+        <div class="alert alert-success">
+          Start using ELOlog now by starting a new log with a click on the button below!
+        </div>
+        {% endif %}
+        <a class="btn btn-success" href="new">
+          <i class="icon-plus icon-white"></i>
+          Start new log
+        </a>
+        <table class="table" id="log-table">
+        <thead>
+          <tr>
+            <th>Summoner/Team</th>
+            <th>Region</th>
+            <th>ELO</th>
+            <th>Games</th>
+            <th>Ratio</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for log in log_list %}
+          <tr id="{{ log.id }}">
+            <td>{{ log.summoner_name }}</td>
+            <td>{{ log.region }}</td>
+            <td>{{ log.current_elo }}</td>
+            <td>{{ log.total_games }}</td>
+            <td>{{ log.win_loss_ratio }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <script type="text/javascript">
+        $(document).ready(function()
+        {
+          $('#log-table > tbody > tr').click(function() {
+            window.location.href = "/" + this.id;
+          });
+        });
+      </script>
+{% endblock %}

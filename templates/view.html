@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+{% block title %}- View log{% endblock %}
+
+{% block content %}
+        <div class="page-header">
+          <h1>{{ log.summoner_name }} <small>Overview</small></h1>
+        </div>
+        {% if not log_item_list %}
+        {% if not is_public %}
+        <div class="alert alert-success">
+          Fill your log by writing a new entry!
+        </div>
+        {% else %}
+        <div class="alert alert-warning">
+          This ELOlog is empty!
+        </div>
+        {% endif %}
+        {% endif %}
+
+        {% if not is_public %}
+        <form class="well form-inline">
+          {% if not log.public %}
+          <a class="btn btn-success" href="publish">
+            <i class="icon-globe icon-white"></i>
+            Publish log
+          </a>
+          {% else %}
+          <a class="btn btn-danger" href="unpublish">
+            <i class="icon-globe icon-white"></i>
+            Unpublish log
+          </a>
+
+          {% endif %}
+          <input type="text" class="span7" name="public_url" value="{{ log.public_url }}"/>
+        </form>
+        {% endif %}
+
+        {% if not is_public %}
+        <div class="modal hide fade" id="md-confirm-delete">
+          <div class="modal-header">
+            <button class="close" data-dismiss="modal">×</button>
+            <h3>Are you sure?</h3>
+          </div>
+          <div class="modal-body">
+            <p>Do you really want to delete the ELOlog for <strong>{{ log.summoner_name }}</strong>?</p>
+            <p>All your log entries will be lost.</p>
+          </div>
+          <div class="modal-footer">
+            <button class="btn" data-dismiss="modal">No, cancel</button>
+            <a class="btn btn-danger" href="/{{ log.id }}/delete">Yes, delete</a>
+          </div>
+        </div>
+
+        <div class="modal hide fade" id="md-confirm-delete-item">
+          <div class="modal-header">
+            <button class="close" data-dismiss="modal">×</button>
+            <h3>Are you sure?</h3>
+          </div>
+          <div class="modal-body">
+            <p>Do you really want to delete this ELOlog entry?</p>
+          </div>
+          <div class="modal-footer">
+            <button class="btn" data-dismiss="modal">No, cancel</button>
+            <a class="btn btn-danger" id="md-btn-delete" href="/{{ log.id }}/delete/">Yes, delete</a>
+          </div>
+        </div>
+        {% endif %}
+        
+        <div class="btn-toolbar">
+          {% if not is_public %}
+          <a class="btn btn-success" href="new">
+            <i class="icon-pencil icon-white"></i>
+            Write entry
+          </a>
+          <a class="btn btn-warning" href="edit">
+            <i class="icon-edit icon-white"></i>
+            Edit log
+          </a>
+          {% endif %}
+          <a class="btn" href="graph">
+            <i class="icon-list-alt"></i>
+            Show Graphs
+          </a>
+          <a class="btn" href="export">
+            <i class="icon-share"></i>
+            Export as CSV
+          </a>
+
+          {% if not is_public %}
+          <a class="btn btn-danger pull-right" data-toggle="modal" href="#md-confirm-delete">
+            <i class="icon-trash icon-white"></i>
+            Delete log
+          </a>
+          {% endif %}
+        </div>
+        
+        <table class="table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Champion</th>
+            <th>ELO Gain</th>
+            <th>Text</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in log_item_list %}
+          {% if item.win %}
+          <tr id="{{ item.id }}" class="background-green">
+          {% else %}
+          <tr id="{{ item.id }}" class="background-red">
+          {% endif %}
+            <td>{{ item.nr }}</td>
+            <td><img src="{{ STATIC_URL }}img/champions/{{ item.champion.image }}"></img></td>
+            <td>
+              <span class={% if item.elo_gain < 0 %} "shade-red" {% else %} "shade-green" {% endif %}>{{ item.elo_gain }}</span>
+            </td>
+            <td>{{ item.text|linebreaks }}</td>
+            <td>
+              {% if not is_public %}
+              <div class="btn-group">
+                <button class="btn btn-mini dropdown-toggle" data-toggle="dropdown">
+                  <i class="icon-cog"></i>
+                  <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                  <li>
+                  <a href="/{{ log.id }}/edit/{{ item.id }}">
+                      <i class="icon-edit"></i>
+                      Edit
+                    </a>
+                  </li>
+                  <li class="divider"></li>
+                  <li>
+                  <a href="#md-confirm-delete-item" data-toggle="modal" data-id="{{ item.id }}" class="open-md-confirm-delete-item">
+                      <i class="icon-trash"></i>
+                      Delete
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <script>
+      $(document).on("click", ".open-md-confirm-delete-item", function () {
+        var item_id = $(this).data('id');
+        var current_href = $(".modal-footer #md-btn-delete").prop('href')
+        $(".modal-footer #md-btn-delete").prop('href', current_href + item_id);
+        $('#md-confirm-delete-item').modal('show');
+      });
+      
+      </script>
+{% endblock %}
