@@ -31,12 +31,12 @@
           </div>
 
           <div class="fieldWrapper">
-            {{ form.games_won.errors }}
-            {{ form.games_lost.errors }}
+            {{ form.initial_games_won.errors }}
+            {{ form.initial_games_lost.errors }}
             <label for="id_summoner_name">Games Won/Lost:</label>
             <div class="alert">
               <strong>Warning:</strong> This should be your won/lost games from before you started using ELOlog. Different values may lead to some minor calculation errors. 
-              {{ form.games_won }} / {{ form.games_lost }}
+              {{ form.initial_games_won }} / {{ form.initial_games_lost }}
             </div>
           </div>
 
