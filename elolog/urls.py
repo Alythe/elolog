@@ -35,6 +35,7 @@ urlpatterns = patterns('',
     url(r'^news/$', 'log.views.news'),
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
+    #(r'^forum/', include('djangobb_forum.urls', namespace='djangobb')),
 )
 
 urlpatterns += patterns('',

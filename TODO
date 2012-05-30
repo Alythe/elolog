@@ -2,7 +2,6 @@
 * Warnung anzeigen wenn sich ein inaktiver Account einloggt
 * Custom fields implementieren
 * Team-Logs implementieren
-* Graph bei initial_elo beginnen lassen
 * Datum für Spiel eingeben lassen
 * HighCharts statt flotr?
 * Leaves
@@ -13,6 +12,7 @@
 
 - vFUTURE
 * FIX: Fixed unicode characters breaking the export of csv files
+* FIX: Fixed Wukongs and Kog'Maws pictures
 
 - v0.02
 
