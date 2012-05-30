@@ -11,6 +11,9 @@
 * Graph, der Gewinne auf Uhrzeit abbildet
 * Globale Statistik (Durchschnitts-Elo jede Woche)
 
+- vFUTURE
+* FIX: Fixed unicode characters breaking the export of csv files
+
 - v0.02
 
 * NEW: A news page to keep you updated on updates (X to the z)
