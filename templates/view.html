@@ -8,11 +8,11 @@
         {% if not log_item_list %}
         {% if not is_public %}
         <div class="alert alert-success">
-          Fill your log by writing a new entry!
+          Fill your EloLog by writing a new entry!
         </div>
         {% else %}
         <div class="alert alert-warning">
-          This ELOlog is empty!
+          This EloLog is empty!
         </div>
         {% endif %}
         {% endif %}
@@ -42,7 +42,7 @@
             <h3>Are you sure?</h3>
           </div>
           <div class="modal-body">
-            <p>Do you really want to delete the ELOlog for <strong>{{ log.summoner_name }}</strong>?</p>
+            <p>Do you really want to delete the Elolog for <strong>{{ log.summoner_name }}</strong>?</p>
             <p>All your log entries will be lost.</p>
           </div>
           <div class="modal-footer">
@@ -57,7 +57,7 @@
             <h3>Are you sure?</h3>
           </div>
           <div class="modal-body">
-            <p>Do you really want to delete this ELOlog entry?</p>
+            <p>Do you really want to delete this Elolog entry?</p>
           </div>
           <div class="modal-footer">
             <button class="btn" data-dismiss="modal">No, cancel</button>
@@ -101,7 +101,7 @@
           <tr>
             <th>#</th>
             <th>Champion</th>
-            <th>ELO Gain</th>
+            <th>Elo Gain</th>
             <th>Text</th>
             <th></th>
           </tr>

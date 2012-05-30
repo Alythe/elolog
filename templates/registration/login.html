@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>ELOlog</title>
+  <title>Elolog</title>
   <link href="{{ STATIC_URL }}css/bootstrap.min.css" media="screen" rel="stylesheet" />
   <style type="text/css">
     /* Override some defaults */
@@ -53,12 +53,19 @@
     <div class="content">
       <div class="row">
         <div class="login-form">
-          <h2>ELOLog - Login</h2>
+          <h2>EloLog - Login</h2>
           <form method="POST" action="">
             {% csrf_token %}
             <fieldset>
+              {% if form.non_field_errors %}
+              <div class="alert alert-danger">
+                {{ form.non_field_errors }}
+              </div>
+              {% endif %}
               <div class="control-group">
-                <input type="text" name="username" placeholder="Username">
+
+                <label for"username">Username (not your email!)</label>
+                <input type="text" id="username" name="username" placeholder="Username">
               </div>
               <div class="control-group">
                 <input type="password" name="password" placeholder="Password">

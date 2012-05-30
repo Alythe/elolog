@@ -1,7 +1,7 @@
 # Create your views here.
 
 from django.http import HttpResponse, HttpResponseRedirect
-from log.models import Log, LogItem
+from log.models import Log, LogItem, News
 from log.forms import LogForm, LogItemForm
 from django.template import Context, loader, RequestContext
 from django.shortcuts import render_to_response, get_object_or_404
@@ -9,6 +9,7 @@ from django.contrib.auth import logout, authenticate, login
 from django.core.context_processors import csrf
 import csv
 
+### LOG Viewing ###
 def home(request):
   c = RequestContext(request, {'user': request.user})
   if not request.user.is_authenticated():
@@ -18,6 +19,42 @@ def home(request):
     c['log_list'] = log_list
     return render_to_response('home.html', c)
 
+def view(request, log_id, public=False):
+
+  if not public:
+    if not request.user.is_authenticated():
+      return HttpResponseRedirect('/')
+    
+    log = get_object_or_404(Log, pk=log_id)
+
+    if not request.user.id == log.user.id:
+      return HttpResponseRedirect('/')
+  else:
+    log = get_object_or_404(Log, public_hash__exact=log_id)
+   
+    if not log.public:
+      return HttpResponseRedirect('/')
+    
+  log_item_list = log.logitem_set.all()
+
+  start_elo = log.initial_elo
+  nr = 1
+  for item in log_item_list:
+    item.nr = nr
+    item.elo_gain = item.elo - start_elo
+    start_elo = item.elo
+    nr += 1
+
+  c = RequestContext(request, {
+    'log': log,
+    'log_item_list': log_item_list,
+    'user': request.user.id,
+    'is_public': public
+  })
+
+  return render_to_response('view.html', c) 
+
+### LOG Functions ###
 def graph_log(request, log_id, public=False):
 
   if not public:
@@ -38,9 +75,9 @@ def graph_log(request, log_id, public=False):
   log_empty = len(log_item_list) == 0
 
   if not log_empty:
-    data = "["
+    data = "[ [0, %d], " % log.initial_elo
 
-    index = 0
+    index = 1
     for item in log.logitem_set.all():
       data += "[%d, %d]," % (index, item.elo)
       index += 1
@@ -64,13 +101,40 @@ def export_log(request, log_id):
   response['Content-Disposition'] = 'attachment; filename=%s.csv' % log.summoner_name
 
   writer = csv.writer(response)
-  writer.writerow(['Champion', 'ELO after', 'Remarks'])
+  writer.writerow(['Champion', 'Elo after', 'Remarks'])
 
   for item in log.logitem_set.all():
     writer.writerow([item.champion.name, item.elo, item.text])
 
   return response
 
+def publish(request, log_id):
+  log = get_object_or_404(Log, pk=log_id)
+
+  if not request.user.is_authenticated():
+    return HttpResponseRedirect('/')
+
+  if not request.user.id == log.user.id:
+    return HttpResponseRedirect('/')
+
+  log.public = True
+  log.save()
+  return HttpResponseRedirect('/' + log_id)
+
+def unpublish(request, log_id):
+  log = get_object_or_404(Log, pk=log_id)
+
+  if not request.user.is_authenticated():
+    return HttpResponseRedirect('/')
+
+  if not request.user.id == log.user.id:
+    return HttpResponseRedirect('/')
+
+  log.public = False
+  log.save()
+  return HttpResponseRedirect('/' + log_id)
+
+### LOG Management
 def delete_item(request, log_id, item_id):
   if not request.user.is_authenticated():
     return HttpResponseRedirect('/')
@@ -153,71 +217,7 @@ def edit_log(request, log_id=None):
 
   return render_to_response('edit_log.html', RequestContext(request, {'form': form, 'log': log}))
 
-def view(request, log_id, public=False):
-
-  if not public:
-    if not request.user.is_authenticated():
-      return HttpResponseRedirect('/')
-    
-    log = get_object_or_404(Log, pk=log_id)
-
-    if not request.user.id == log.user.id:
-      return HttpResponseRedirect('/')
-  else:
-    log = get_object_or_404(Log, public_hash__exact=log_id)
-   
-    if not log.public:
-      return HttpResponseRedirect('/')
-    
-  log_item_list = log.logitem_set.all()
-
-  start_elo = log.initial_elo
-  nr = 1
-  for item in log_item_list:
-    item.nr = nr
-    item.elo_gain = item.elo - start_elo
-    start_elo = item.elo
-    nr += 1
-
-  c = RequestContext(request, {
-    'log': log,
-    'log_item_list': log_item_list,
-    'user': request.user.id,
-    'is_public': public
-  })
-
-  return render_to_response('view.html', c) 
-
-def publish(request, log_id):
-  log = get_object_or_404(Log, pk=log_id)
-
-  if not request.user.is_authenticated():
-    return HttpResponseRedirect('/')
-
-  if not request.user.id == log.user.id:
-    return HttpResponseRedirect('/')
-
-  log.public = True
-  log.save()
-  return HttpResponseRedirect('/' + log_id)
-
-def unpublish(request, log_id):
-  log = get_object_or_404(Log, pk=log_id)
-
-  if not request.user.is_authenticated():
-    return HttpResponseRedirect('/')
-
-  if not request.user.id == log.user.id:
-    return HttpResponseRedirect('/')
-
-  log.public = False
-  log.save()
-  return HttpResponseRedirect('/' + log_id)
-
-
-def logout_user(request):
-  if not request.user.is_authenticated():
-    return HttpResponseRedirect('/')
-  else:
-    logout(request)
-    return HttpResponseRedirect('/')
+### MISC News
+def news(request):
+  news = News.objects.all()
+  return render_to_response('news.html', RequestContext(request, {'news': news}))

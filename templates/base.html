@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>ELOlog{% block title %}{% endblock %}</title>
+  <title>Elolog{% block title %}{% endblock %}</title>
   <link href="{{ STATIC_URL }}css/bootstrap.min.css" media="screen" rel="stylesheet" />
   <link href="{{ STATIC_URL }}css/bootstrap-responsive.css" rel="stylesheet" />
   <link href="{{ STATIC_URL }}css/main.css" rel="stylesheet" />
@@ -19,6 +19,7 @@
     .scrollable {
       overflow: auto;
     }
+    {% block style %}{% endblock %}
   </style> 
 </head>
 
@@ -32,13 +33,14 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </a>
-        <a class="brand" href="/">ELOlog</a>
+        <a class="brand" href="/">EloLog</a>
         <a class="btn btn-warning pull-right" href="/logout">
           Sign out
         </a>
         <div class="nav-collapse">
           <ul class="nav">
             <li><a href="/">Home</a></li>
+            <li><a href="/news">News</a></li>
             <li><a href="/about">About</a></li>
           </ul>
         </div>

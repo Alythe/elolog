@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.contrib.sites.models import Site
 import hashlib
+import unicodedata
 
 # Create your models here.
 
@@ -68,7 +69,8 @@ class Log(models.Model):
 
   def public_url(self):
     if len(self.public_hash) == 0 and self.public:
-      self.public_hash = hashlib.md5(str(self.id) + self.summoner_name).hexdigest()[:10]
+      name = unicodedata.normalize("NFKD", self.summoner_name).encode('ascii', 'ignore')
+      self.public_hash = hashlib.md5(str(self.id) + name).hexdigest()[:10]
       self.save()
     
     if self.public:
@@ -101,3 +103,14 @@ class LogItem(models.Model):
     ordering = ['date']
     get_latest_by = 'date'
 
+class News(models.Model):
+  date = models.DateTimeField()
+  title = models.CharField(max_length = 200)
+  text = models.TextField()
+  user = models.ForeignKey(User)
+
+  def __unicode__(self):
+    return self.title
+
+  class Meta:
+    ordering = ['-date']

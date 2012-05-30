@@ -1,0 +1,22 @@
+-- TODO --
+* Warnung anzeigen wenn sich ein inaktiver Account einloggt
+* Custom fields implementieren
+* Team-Logs implementieren
+* Graph bei initial_elo beginnen lassen
+* Datum für Spiel eingeben lassen
+* HighCharts statt flotr?
+* Leaves
+
+-- IDEAS --
+* Graph, der Gewinne auf Uhrzeit abbildet
+* Globale Statistik (Durchschnitts-Elo jede Woche)
+
+- v0.02
+
+* NEW: A news page to keep you updated on updates (X to the z)
+* FIX: Graph now starts at initial Elo
+* FIX: Fixed Ryze' image
+* FIX: Show error message when login data is wrong
+* FIX: Fixed an error on the password reset complete page
+* FIX: Replaced wrong writing of "ELO" with correct one ("Elo")
+* FIX: Crash when Summoner Name contains unicode characters and the log is public (crash on hash generation)

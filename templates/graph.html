@@ -20,13 +20,13 @@
         <hr/>
         {% if log_empty %}
         <div class="alert alert-warning">
-          Your ELOlog is empty!
+          Your EloLog is empty!
         </div>
         {% else %}
         {% block header %}
         <script src="{{ STATIC_URL }}js/flot/jquery.flot.js"></script>
         {% endblock %}
-        <h2>ELO progression</h2>
+        <h2>Elo progression</h2>
         <div id="placeholder" style="width:600px;height:300px"></div>
         <script>
           $(document).ready(function()

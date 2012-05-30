@@ -1,6 +1,14 @@
 {% extends "base.html" %}
 {% block title %} - Home{% endblock %}
 
+{% block style %}
+
+#log-table tr:hover {
+  cursor: pointer;
+  cursor: hand
+  }
+{% endblock %}
+
 {% block content %}
         <div class="page-header">
           <h1>Your logs</h1>
@@ -9,7 +17,7 @@
         <hr/>
         {% if not log_list %}
         <div class="alert alert-success">
-          Start using ELOlog now by starting a new log with a click on the button below!
+          Start using EloLog now by starting a new log with a click on the button below!
         </div>
         {% endif %}
         <a class="btn btn-success" href="new">
@@ -21,7 +29,7 @@
           <tr>
             <th>Summoner/Team</th>
             <th>Region</th>
-            <th>ELO</th>
+            <th>Elo</th>
             <th>Games</th>
             <th>Ratio</th>
           </tr>
