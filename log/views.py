@@ -8,6 +8,7 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.auth import logout, authenticate, login
 from django.core.context_processors import csrf
 import csv
+import unicodedata
 
 ### LOG Viewing ###
 def home(request):
@@ -98,7 +99,10 @@ def export_log(request, log_id):
     return HttpResponseRedirect('/')
 
   response = HttpResponse(mimetype="text/csv")
-  response['Content-Disposition'] = 'attachment; filename=%s.csv' % log.summoner_name
+
+  # do this to remove non ascii-printable characters
+  name = unicodedata.normalize("NFKD", log.summoner_name).encode('ascii', 'ignore')
+  response['Content-Disposition'] = 'attachment; filename=export_%s.csv' % name
 
   writer = csv.writer(response)
   writer.writerow(['Champion', 'Elo after', 'Remarks'])
