@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.contrib.sites.models import Site
+from django.core.validators import MaxLengthValidator
+
 import hashlib
 import unicodedata
 
@@ -120,7 +122,7 @@ class Comment(models.Model):
   date = models.DateTimeField()
   user = models.ForeignKey(User)
   news = models.ForeignKey(News)
-  text = models.TextField(max_length=1000)
+  text = models.CharField(max_length=1000)
 
   def __unicode__(self):
     return "%s - %s" % (self.user.username, self.text)

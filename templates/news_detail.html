@@ -35,9 +35,16 @@
         {% endfor %}
         
         {% if user.is_authenticated %}
-        <form action="" method="POST">
+          <form action="" method="POST">
           {% csrf_token %}
-          {{ form.as_p }}
+          <div class="fieldWrapper">
+            <label for="id_text">Text:</label>
+            {% if form.text.errors %}
+            <div class="alert alert-danger">{{ form.text.errors }}</div>
+            {% endif %}
+
+            {{ form.text }}
+          </div>
           <input type="submit" value="Send" class="btn btn-primary"/>
         </form>
         {% else %}

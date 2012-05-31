@@ -240,7 +240,6 @@ def news_comments(request, news_id):
     if form.is_valid():
       form.save()
     
-    return HttpResponseRedirect('/news/%s' % news_id)
   else:
     form = CommentForm()
 

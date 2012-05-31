@@ -1,4 +1,4 @@
-from django.forms import ModelForm
+from django.forms import ModelForm, CharField, Textarea
 from log.models import Log, LogItem, Comment
 from django.contrib.auth.models import User
 
@@ -18,6 +18,12 @@ class SignupForm(ModelForm):
     fields = ('username', 'password', 'email')
 
 class CommentForm(ModelForm):
+  text = CharField(
+      max_length = 1000,
+      widget = Textarea,
+      error_messages={'max_length': u'Please write no more than 1000 characters!'}
+  )
+
   class Meta:
     model = Comment
     fields = ('text',)
