@@ -10,7 +10,6 @@ from django.contrib.auth.models import User
 from django.core.context_processors import csrf
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-import filters
 import csv
 import unicodedata
 import datetime
