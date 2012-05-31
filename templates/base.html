@@ -45,9 +45,13 @@
         {% endif %}
         <div class="nav-collapse">
           <ul class="nav">
-            <li><a href="/">Home</a></li>
-            <li><a href="/news">News</a></li>
-            <li><a href="/about">About</a></li>
+            <li><a href="{% url log.views.index %}">Home</a></li>
+            {% if user.is_authenticated %}
+            <li><a href="{% url my_logs %}">My logs</a></li>
+            {% endif %}
+            <li><a href="/public/">Public logs</a></li>
+            <li><a href="{% url log.views.news %}">News</a></li>
+            <li><a href="{% url about %}">About</a></li>
           </ul>
         </div>
       </div>

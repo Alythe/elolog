@@ -13,3 +13,15 @@
 .background-green {
   background-color: #ecffe7;
 }
+
+.pages ul {
+  list-style-type: none;
+  display: inline;
+  margin: 0;
+}
+
+.pages ul li {
+  display: inline;
+  margin-left: 5px;
+  margin-right: 5px;
+}

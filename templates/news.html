@@ -1,6 +1,0 @@
-{% load markup %}
-
-<h2>{{ news_item.title }} <small class="smaller">{{ news_item.date }} - {{ news_item.user.username }}</h2>
-<div class="news_block">
-  {{ news_item.text|markdown}}
-</div>

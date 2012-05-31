@@ -1,0 +1,5 @@
+{% if news_item.comments_allowed %}
+<div class="comments"><a href="{% url log.views.news_comments news_item.id %}">{{ news_item.comment_set.count }} Comment(s)</a></div>
+{% else %}
+<div class="comments">Commenting is disabled for this post.</div>
+{% endif %}

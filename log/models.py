@@ -13,6 +13,9 @@ REGION_CHOICES = (
   ('NA', 'North America'),
   ('EUW', 'EU West'),
   ('EUNE', 'EU North & East'),
+  ('CH', 'China'),
+  ('KO', 'Korea'),
+  ('SEA', 'Southeast Asia'),
 )
 
 class Champion(models.Model):
@@ -43,6 +46,7 @@ class Log(models.Model):
   initial_games_lost = models.PositiveIntegerField(default=0)
   public = models.BooleanField(default=False)
   public_hash = models.CharField(max_length = 10, default = "", blank=True)
+  show_on_public_list = models.BooleanField(default=False)
 
   def total_games(self):
     return self.games_won() + self.games_lost()
@@ -117,6 +121,7 @@ class News(models.Model):
 
   class Meta:
     ordering = ['-date']
+    get_latest_by = 'date'
 
 class Comment(models.Model):
   date = models.DateTimeField()

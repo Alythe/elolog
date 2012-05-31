@@ -40,6 +40,15 @@
             </div>
           </div>
 
+          <div class="fieldWrapper">
+            {{ form.show_on_public_list.errors }}
+            <label for="id_summoner_name">Show log on public list:</label>
+            <div class="alert">
+              <strong>Information:</strong> Activating this feature makes your log appear on the list of public logs as soon as you publish it.<br/> 
+              {{ form.show_on_public_list }}
+            </div>
+          </div>
+
           <input type="submit" class="btn btn-primary" value="Save" />
 
         </form>

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %} - News{% endblock %}
+
+{% block style %}
+.smaller {
+  font-size: 11px;
+  }
+.news_block {
+  margin-bottom: 10px;
+  }
+.comments {
+  margin-bottom: 20px;
+}
+{% endblock %}
+
+{% block page_width %}span8 offset2{% endblock %}
+
+{% block content %}
+        <div class="page-header">
+          <h1>News</h1>
+        </div>
+
+        {% for news_item in news %}
+          {% include 'news/news.html' %}
+          {% include 'news/news_comment_line.html' %}  
+        {% endfor %}
+{% endblock %}

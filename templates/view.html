@@ -20,18 +20,29 @@
         {% if not is_public %}
         <form class="well form-inline">
           {% if not log.public %}
-          <a class="btn btn-success" href="publish">
+          <a class="btn btn-success" href="{% url log.views.publish log.id %}">
             <i class="icon-globe icon-white"></i>
             Publish log
           </a>
           {% else %}
-          <a class="btn btn-danger" href="unpublish">
+          <a class="btn btn-danger" href="{% url log.views.unpublish log.id %}">
             <i class="icon-globe icon-white"></i>
             Unpublish log
           </a>
 
           {% endif %}
-          <input type="text" class="span7" name="public_url" value="{{ log.public_url }}"/>
+          <input type="text" class="span3" name="public_url" value="{{ log.public_url }}"/>
+
+          {% if log.public %}
+          <span class="pull-right">
+          {% if log.show_on_public_list %}
+            This log also appears on the public list.
+          {% else %}
+            This log does not appear on the public list.
+          {% endif %}
+          To change this, click "Edit log".
+        </span>
+        {% endif %}
         </form>
         {% endif %}
 
@@ -61,7 +72,7 @@
           </div>
           <div class="modal-footer">
             <button class="btn" data-dismiss="modal">No, cancel</button>
-            <a class="btn btn-danger" id="md-btn-delete" href="/{{ log.id }}/delete/">Yes, delete</a>
+            <a class="btn btn-danger" id="md-btn-delete" href="#">Yes, delete</a>
           </div>
         </div>
         {% endif %}
@@ -128,7 +139,7 @@
                 </button>
                 <ul class="dropdown-menu">
                   <li>
-                  <a href="/{{ log.id }}/edit/{{ item.id }}">
+                  <a href="{% url log.views.edit_item log.id  item.id %}">
                       <i class="icon-edit"></i>
                       Edit
                     </a>
@@ -152,7 +163,7 @@
       $(document).on("click", ".open-md-confirm-delete-item", function () {
         var item_id = $(this).data('id');
         var current_href = $(".modal-footer #md-btn-delete").prop('href')
-        $(".modal-footer #md-btn-delete").prop('href', current_href + item_id);
+        $(".modal-footer #md-btn-delete").prop('href', '/logs/{{ log.id }}/delete/' + item_id);
         $('#md-confirm-delete-item').modal('show');
       });
       

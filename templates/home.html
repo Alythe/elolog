@@ -2,56 +2,52 @@
 {% block title %} - Home{% endblock %}
 
 {% block style %}
-
-#log-table tr:hover {
-  cursor: pointer;
-  cursor: hand
+.news_block {
+margin: 0;
+padding: 0;
+}
+.news_block h1 {
+  font-size: 14px;
   }
+
+.news_block h1 .smaller {
+  font-size: 10px;
+  }
+
+.comments {
+  margin-bottom: 20px;
+  }
+
+h2 img {
+  margin-right: 10px;
+  padding-bottom: 10px;
+}
 {% endblock %}
 
 {% block content %}
         <div class="page-header">
-          <h1>Your logs</h1>
+          <h1>EloLog <small>Home</small></h1>
         </div>
-        <a href="/accounts/password/change/">Change password</a>
-        <hr/>
-        {% if not log_list %}
-        <div class="alert alert-success">
-          Start using EloLog now by starting a new log with a click on the button below!
-        </div>
+
+        <p>New to EloLog? <a href="{% url about %}">Find out</a> what this is about!</p>
+        {% if not user.is_authenticated %}
+        <p>Want to start improving? Click "Sign in" in the top right corner or create an account <a href="{% url registration_register %}"> here</a>.
         {% endif %}
-        <a class="btn btn-success" href="new">
-          <i class="icon-plus icon-white"></i>
-          Start new log
-        </a>
-        <table class="table" id="log-table">
-        <thead>
-          <tr>
-            <th>Summoner/Team</th>
-            <th>Region</th>
-            <th>Elo</th>
-            <th>Games</th>
-            <th>Ratio</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for log in log_list %}
-          <tr id="{{ log.id }}">
-            <td>{{ log.summoner_name }}</td>
-            <td>{{ log.get_region_display }}</td>
-            <td>{{ log.current_elo }}</td>
-            <td>{{ log.total_games }}</td>
-            <td>{{ log.win_loss_ratio }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-      <script type="text/javascript">
-        $(document).ready(function()
-        {
-          $('#log-table > tbody > tr').click(function() {
-            window.location.href = "/" + this.id;
-          });
-        });
-      </script>
+        <hr/>
+        <div class="row">
+          <div class="span5">
+            <h2><img src="{{ STATIC_URL }}img/icons/glyphicons_235_pen.png"/>Latest news</h2>
+            {% include 'news/news.html' %}
+            {% include 'news/news_comment_line.html' %}
+
+            <a href="{% url log.views.news %}">View more news</a>
+          </div>
+        
+          <div class="span5"> 
+            <h2><img src="{{ STATIC_URL }}img/icons/glyphicons_041_charts.png"/>Statistic</h2>
+            <p>We are currently storing <strong>{{ logs.count }}</strong> personal logs from <strong>{{ users.count }}</strong> users.</p>
+            <p>Of a total of <strong>{{ logitems_count }}</strong> games, <strong>{{ logitems_won.count }}</strong> were won. That's a Win/Loss-Ratio of <strong>{{ wl_ratio }}</strong>.</p>
+            <p><strong>{{ public_logs.count }}</strong> logs are viewable publicly viewable, <strong>{{ public_logs_on_list.count }}</strong> of them are <a href="{% url public_logs %}">listed</a>.
+          </div>
+        </div>
 {% endblock %}

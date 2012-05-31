@@ -10,9 +10,18 @@
 * Graph, der Gewinne auf Uhrzeit abbildet
 * Globale Statistik (Durchschnitts-Elo jede Woche)
 
-- vFUTURE
+- v0.1
+* NEW: Users can now comment on news
+* NEW: Show Sign in button when users are not logged in
+* NEW: Some minor design changes
+* NEW: A spectacular new front page
+* NEW: A list of public logs. You can choose if you want to be on that list, even if your log is public
+* NEW: Added our eastern friends to the region list. Welcome aboard!
+* NEW: Staff member comments on news get a green name.
+* FIX: Games are now sorted by date descending, meaning the newest game is on top
 * FIX: Fixed unicode characters breaking the export of csv files
 * FIX: Fixed Wukongs and Kog'Maws pictures
+* FIX: Sign out button was showing even when users were logged out
 
 - v0.02
 

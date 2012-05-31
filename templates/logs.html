@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% load get_range %}
+{% block title %} - Home{% endblock %}
+
+{% block style %}
+
+#log-table tr:hover {
+  cursor: pointer;
+  cursor: hand
+  }
+{% endblock %}
+
+{% block content %}
+        <div class="page-header">
+          {% if is_public %}
+          <h1>Public logs</h1>
+          {% else %}
+          <h1>My logs</h1>
+          {% endif %}
+        </div>
+        {% if not is_public %}
+        <a href="/accounts/password/change/">Change password</a>
+        <hr/>
+        {% endif %}
+        {% if not log_list and not is_public %}
+        <div class="alert alert-success">
+          Start using EloLog now by starting a new log with a click on the button below!
+        </div>
+        {% endif %}
+
+        {% if not is_public %}
+        <a class="btn btn-success" href="{% url log.views.edit_log %}">
+          <i class="icon-plus icon-white"></i>
+          Start new log
+        </a>
+        {% endif %}
+
+        {# PAGINATION #}
+        {% if log_list.paginator.num_pages > 1 %}
+        <div class="pages">
+          {% if log_list.has_previous %}
+          <a href="?p={{ log_list.previous_page_number }}">Previous</a>
+          {% else %}
+          Previous
+          {% endif %}
+          <ul>
+            {% for page in log_list.paginator.num_pages|get_range:1 %}
+            {% if page = log_list.number %}
+              <li><strong>{{ page }}</strong></li>
+        {% else %}
+            <li><a href="?p={{ page }}">{{ page }}</a></li>
+        {% endif %}
+        {% endfor %}
+          </ul>
+          {% if log_list.has_next %}
+          <a href="?p={{ log_list.next_page_number }}">Next</a>
+          {% else %}
+          Next
+          {% endif %}
+        </div>
+        {% endif %}
+        {# PAGINATION_END #}
+
+        <table class="table" id="log-table">
+        <thead>
+          <tr>
+          {% if is_public %}
+            <th>User</th>
+          {% endif %}
+            <th>Summoner/Team</th>
+            <th>Region</th>
+            <th>Elo</th>
+            <th>Games</th>
+            <th>Ratio</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for log in log_list %}
+          {% if not is_public %}
+          <tr id="{{ log.id }}">
+          {% else %}
+          <tr id="{{ log.public_hash }}">
+            <td>{{ log.user.username }}</td>
+          {% endif %}
+            <td>{{ log.summoner_name }}</td>
+            <td>{{ log.get_region_display }}</td>
+            <td>{{ log.current_elo }}</td>
+            <td>{{ log.total_games }}</td>
+            <td>{{ log.win_loss_ratio }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <script type="text/javascript">
+        $(document).ready(function()
+        {
+          $('#log-table > tbody > tr').click(function() {
+            {% if not is_public %}
+            window.location.href = '/logs/' + this.id;
+            {% else %}
+            window.location.href = '/public/' + this.id;
+            {% endif %}
+          });
+        });
+      </script>
+{% endblock %}
