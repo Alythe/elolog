@@ -1,14 +1,15 @@
 # Create your views here.
 
 from django.http import HttpResponse, HttpResponseRedirect
-from log.models import Log, LogItem, News
-from log.forms import LogForm, LogItemForm
+from log.models import Log, LogItem, News, Comment
+from log.forms import LogForm, LogItemForm, CommentForm
 from django.template import Context, loader, RequestContext
 from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.auth import logout, authenticate, login
 from django.core.context_processors import csrf
 import csv
 import unicodedata
+import datetime
 
 ### LOG Viewing ###
 def home(request):
@@ -224,4 +225,23 @@ def edit_log(request, log_id=None):
 ### MISC News
 def news(request):
   news = News.objects.all()
-  return render_to_response('news.html', RequestContext(request, {'news': news}))
+  return render_to_response('news_list.html', RequestContext(request, {'news': news}))
+
+def news_comments(request, news_id):
+  news = get_object_or_404(News, pk=news_id)
+  
+  if request.method == 'POST':
+    if not request.user.is_authenticated() or not news.comments_allowed:
+      return HttpResponseRedirect('/news/%s' % news_id)
+
+    comment = Comment(user=request.user, news=news, date=datetime.datetime.today())
+    form = CommentForm(request.POST, instance=comment)
+
+    if form.is_valid():
+      form.save()
+    
+    return HttpResponseRedirect('/news/%s' % news_id)
+  else:
+    form = CommentForm()
+
+  return render_to_response('news_detail.html', RequestContext(request, {'news_item': news, 'form': form}))

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %} - News{% endblock %}
+
+{% block style %}
+.smaller {
+  font-size: 11px;
+  }
+.news_block {
+  margin-bottom: 10px;
+  }
+.comment-header h1 {
+  font-size: 14px;
+}
+{% endblock %}
+
+{% block page_width %}span8 offset2{% endblock %}
+
+{% block content %}
+        <div class="page-header">
+          <h1>News</h1>
+        </div>
+
+        {% include 'news.html' %}
+
+        {% if news_item.comments_allowed %}
+        <strong>Comments:</strong> 
+        {% for comment in news_item.comment_set.all %}
+        <div class="comment">
+          <div class="comment-header">
+            <h1>{{ comment.user.username }} - <small class="smaller">{{ comment.date }}</small>
+          </div>
+          <p class="well">{{ comment.text }}</p>
+        </div>
+
+        {% endfor %}
+        
+        {% if user.is_authenticated %}
+        <form action="" method="POST">
+          {% csrf_token %}
+          {{ form.as_p }}
+          <input type="submit" value="Send" class="btn btn-primary"/>
+        </form>
+        {% else %}
+          <div class="alert alert-warn">You have to be logged in to post a comment!</div>
+        {% endif %}
+        {% endif %}
+{% endblock %}

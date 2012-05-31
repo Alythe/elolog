@@ -108,9 +108,22 @@ class News(models.Model):
   title = models.CharField(max_length = 200)
   text = models.TextField()
   user = models.ForeignKey(User)
+  comments_allowed = models.BooleanField(default=True)
 
   def __unicode__(self):
     return self.title
+
+  class Meta:
+    ordering = ['-date']
+
+class Comment(models.Model):
+  date = models.DateTimeField()
+  user = models.ForeignKey(User)
+  news = models.ForeignKey(News)
+  text = models.TextField(max_length=1000)
+
+  def __unicode__(self):
+    return "%s - %s" % (self.user.username, self.text)
 
   class Meta:
     ordering = ['-date']
