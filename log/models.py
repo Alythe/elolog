@@ -161,3 +161,16 @@ class Comment(models.Model):
 
   class Meta:
     ordering = ['-date']
+
+class StatisticEntry(models.Model):
+  date = models.DateTimeField()
+  user_count = models.IntegerField()
+  log_count = models.IntegerField()
+  game_count = models.IntegerField()
+  game_win_count = models.IntegerField()
+  game_loss_count = models.IntegerField()
+  game_leave_count = models.IntegerField()
+  wl_ratio = models.FloatField()
+
+  class Meta:
+    ordering = ['-date']
