@@ -13,9 +13,9 @@
 {% block content %}
         <div class="page-header">
           {% if is_public %}
-          <h1>Public logs</h1>
+          <h1><img src="{{ STATIC_URL }}img/icons/glyphicons_039_notes.png"/>Public logs</h1>
           {% else %}
-          <h1>My logs</h1>
+          <h1><img src="{{ STATIC_URL }}img/icons/glyphicons_039_notes.png"/>My logs</h1>
           {% endif %}
         </div>
         {% if not is_public %}
