@@ -34,15 +34,25 @@
           <span class="icon-bar"></span>
         </a>
         <a class="brand" href="/">EloLog</a>
+
+
+
         {% if user.is_authenticated %}
         <a class="btn btn-warning pull-right" href="/logout">
           Sign out
         </a>
+        <div class="nav-collapse pull-right">
+          <ul class="nav">
+            <li><a href="{% url my_logs %}">{{ user.username }}</a></li>
+          </ul> 
+        </div>
         {% else %}
         <a class="btn btn-success pull-right" href="{% url auth_login %}">
           Sign in
         </a>
         {% endif %}
+
+        
         <div class="nav-collapse">
           <ul class="nav">
             <li><a href="{% url log.views.index %}">Home</a></li>

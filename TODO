@@ -5,6 +5,7 @@
 * Datum für Spiel eingeben lassen
 * HighCharts statt flotr?
 * Leaves
+* Description for public logs
 
 -- IDEAS --
 * Graph, der Gewinne auf Uhrzeit abbildet
@@ -21,6 +22,7 @@
 * NEW: Adds pagination to comments for better overview
 * NEW: Added some icons to categories (thanks to http://glyphicons.com/)
 * NEW: Added possibility to resend activation email
+* NEW: Now showing your username next to the logout button. This currently links to your logs, will change in the future
 * FIX: Games are now sorted by date descending, meaning the newest game is on top
 * FIX: Fixed unicode characters breaking the export of csv files
 * FIX: Fixed Wukongs and Kog'Maws pictures
