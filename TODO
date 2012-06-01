@@ -26,6 +26,7 @@
 * FIX: Fixed Wukongs and Kog'Maws pictures
 * FIX: Sign out button was showing even when users were logged out
 * FIX: Clear comment text box when comment was sent (hopefully removes those double posts ;))
+* FIX: Added some left out headers to some account management forms
 
 - v0.02
 

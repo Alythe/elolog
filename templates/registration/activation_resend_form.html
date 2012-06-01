@@ -3,9 +3,12 @@
 {% block title %}- Resend activation{% endblock %}
 
 {% block content %}
+<div class="page-header">
+  <h1>Resend activation mail</h1>
+</div>
 <form method="post" action="">
   {% csrf_token %}
   {{ form.as_p }}
-  <input type="submit" class="btn btn-primary" name="submit" value="Change"/>
+  <input type="submit" class="btn btn-primary" name="submit" value="Resend"/>
 </form>
 {% endblock %}
