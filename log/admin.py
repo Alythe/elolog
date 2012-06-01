@@ -1,11 +1,12 @@
 from log.models import UserProfile
 from log.models import Log
 from log.models import LogItem
-from log.models import Champion, News, Comment
+from log.models import Champion, News, Comment, LockSite
 from django.contrib import admin
 
 admin.site.register(Champion)
 admin.site.register(UserProfile)
+admin.site.register(LockSite)
 
 class LogItemAdmin(admin.TabularInline):
   model = LogItem

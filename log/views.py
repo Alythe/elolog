@@ -1,7 +1,7 @@
 # Create your views here.
 
 from django.http import HttpResponse, HttpResponseRedirect
-from log.models import Log, LogItem, News, Comment, OUTCOME
+from log.models import Log, LogItem, News, Comment, OUTCOME, UserProfile
 from log.forms import LogForm, LogItemForm, CommentForm, ResendActivationForm
 from django.template import Context, loader, RequestContext
 from django.shortcuts import render_to_response, get_object_or_404
@@ -38,6 +38,9 @@ def index(request):
   public_logs = Log.objects.filter(public__exact=True)
   public_logs_on_list = Log.objects.filter(public__exact=True, show_on_public_list__exact=True)
 
+  logged_in_threshold = datetime.datetime.now() - datetime.timedelta(minutes=10)
+  logged_in_profiles = UserProfile.objects.filter(last_activity__gte=logged_in_threshold)
+
   c['news_item'] = news
   c['logs'] = logs
   c['public_logs'] = public_logs
@@ -48,6 +51,7 @@ def index(request):
   c['logitems_left'] = logitems_left
   c['logitems_count'] = logitems_count
   c['wl_ratio'] = wl_ratio
+  c['logged_in_profiles'] = logged_in_profiles
 
   return render_to_response('home.html', c)
 

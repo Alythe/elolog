@@ -25,6 +25,8 @@
 * NEW: Now showing your username next to the logout button. This currently links to your logs, will change in the future
 * NEW: A log entry can have three outcomes: Win/Loss/Leave or Dodge
 * NEW: Logs now display their information on the detail page (elo/games played/wlratio)
+* NEW: Implemented an easy way to lock down the site (for updates etc.)
+* NEW: Implemented method to see if a user is currently logged in
 * CHG: Logs now have more vivid colors to show outcome of a game
 * FIX: Games are now sorted by date descending, meaning the newest game is on top
 * FIX: Fixed unicode characters breaking the export of csv files

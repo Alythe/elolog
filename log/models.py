@@ -6,6 +6,7 @@ from django.core.validators import MaxLengthValidator
 
 import hashlib
 import unicodedata
+import datetime
 
 # Create your models here.
 
@@ -29,6 +30,10 @@ GAME_OUTCOME_CHOICES = (
   (OUTCOME.LEAVE, 'Leave/Dodge'),
 )
 
+class LockSite(models.Model):
+  active = models.BooleanField(default=False)
+  text = models.TextField()
+
 class Champion(models.Model):
   name = models.CharField(max_length = 100)
   image = models.CharField(max_length = 100)
@@ -38,6 +43,11 @@ class Champion(models.Model):
 
 class UserProfile(models.Model):
   user = models.OneToOneField(User)
+  last_activity = models.DateTimeField(default=datetime.datetime.fromtimestamp(0))
+
+  def update_activity(self):
+    self.last_activity = datetime.datetime.now()
+    self.save()
 
   def __unicode__(self):
     return "%s's profile" % self.user
