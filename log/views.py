@@ -173,6 +173,9 @@ def export_log(request, log_id):
   if not request.user.id == log.user.id:
     return HttpResponseRedirect(reverse('log.views.index'))
 
+  if not log.logitem_set.all().count():
+    return HttpResponseRedirect(reverse('log.views.view', args=[log_id]))
+
   response = HttpResponse(mimetype="text/csv")
 
   # do this to remove non ascii-printable characters
@@ -226,7 +229,7 @@ def delete_item(request, log_id, item_id):
   item = log.logitem_set.get(id=item_id)
   item.delete()
 
-  return HttpResponseRedirect(reverse('log.views.index') + str(log_id))
+  return HttpResponseRedirect(reverse('log.views.view', args=[log_id]))
 
 
 def delete_log(request, log_id):
@@ -240,7 +243,7 @@ def delete_log(request, log_id):
 
   log.delete()
 
-  return HttpResponseRedirect(reverse('log.views.index'))
+  return HttpResponseRedirect(reverse('my_logs'))
 
 def edit_item(request, log_id, item_id=None):
   if not request.user.is_authenticated():
@@ -289,7 +292,7 @@ def edit_log(request, log_id=None):
       if log_id:
         return HttpResponseRedirect(reverse('log.views.view', args=[log_id]))
       else:
-        return HttpResponseRedirect(reverse('log.views.logs'))
+        return HttpResponseRedirect(reverse('my_logs'))
 
   else:
     form = LogForm(instance=log)

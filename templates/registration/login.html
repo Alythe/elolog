@@ -10,7 +10,7 @@
     {% csrf_token %}
     {{ form.as_p }}
     <input type="submit" class="btn btn-primary" value="Sign in">
-    <a href="{% url django.contrib.auth.views.password_reset %}">Forgot your password?</a> - 
-    <a href="{% url log.views.resend_activation %}">Resend activation mail?</a>
+    <a href="{% url django.contrib.auth.views.password_reset %}">I forgot my password</a> - 
+    <a href="{% url log.views.resend_activation %}">I did not receive my activation mail</a>
   </form>
 {% endblock %}

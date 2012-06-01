@@ -27,6 +27,7 @@
 * NEW: Logs now display their information on the detail page (elo/games played/wlratio)
 * NEW: Implemented an easy way to lock down the site (for updates etc.)
 * NEW: Implemented method to see if a user is currently logged in
+* NEW: Added some sanity checks to log forms
 * CHG: Logs now have more vivid colors to show outcome of a game
 * FIX: Games are now sorted by date descending, meaning the newest game is on top
 * FIX: Fixed unicode characters breaking the export of csv files
@@ -34,6 +35,8 @@
 * FIX: Sign out button was showing even when users were logged out
 * FIX: Clear comment text box when comment was sent (hopefully removes those double posts ;))
 * FIX: Added some left out headers to some account management forms
+* FIX: Can't export empty logs anylonger
+* FIX: Many small bugfixes
 
 - v0.02
 
