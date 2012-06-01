@@ -113,6 +113,7 @@ def view(request, log_id, public=False):
   log_item_list_r = log_item_list.reverse()
   size = log_item_list_r.count()
   for item in log_item_list_r:
+    item.nr = size - index
     item.elo_gain = elo_gain[size - 1 - index]
     index += 1
 
