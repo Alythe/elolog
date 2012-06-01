@@ -15,10 +15,12 @@
 * NEW: Show Sign in button when users are not logged in
 * NEW: Some minor design changes
 * NEW: A spectacular new front page
-* NEW: A list of public logs. You can choose if you want to be on that list, even if your log is public
+* NEW: A list of public logs. You can choose not to appear on that list, even if your log is public. Privacy, fuck yes.
 * NEW: Added our eastern friends to the region list. Welcome aboard!
 * NEW: Staff member comments on news get a green name.
 * NEW: Adds pagination to comments for better overview
+* NEW: Added some icons to categories (thanks to http://glyphicons.com/)
+* NEW: Added possibility to resend activation email
 * FIX: Games are now sorted by date descending, meaning the newest game is on top
 * FIX: Fixed unicode characters breaking the export of csv files
 * FIX: Fixed Wukongs and Kog'Maws pictures

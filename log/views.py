@@ -2,7 +2,7 @@
 
 from django.http import HttpResponse, HttpResponseRedirect
 from log.models import Log, LogItem, News, Comment
-from log.forms import LogForm, LogItemForm, CommentForm
+from log.forms import LogForm, LogItemForm, CommentForm, ResendActivationForm
 from django.template import Context, loader, RequestContext
 from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.auth import logout, authenticate, login
@@ -10,6 +10,12 @@ from django.contrib.auth.models import User
 from django.core.context_processors import csrf
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.utils.hashcompat import sha_constructor
+from registration.models import RegistrationProfile
+from django.contrib.sites.models import Site
+from django.conf import settings
+
+from random import random
 import csv
 import unicodedata
 import datetime
@@ -279,6 +285,61 @@ def edit_log(request, log_id=None):
 
   return render_to_response('edit_log.html', RequestContext(request, {'form': form, 'log': log}))
 
+### ACCOUNT Management
+def resend_activation(request):
+  if request.user.is_authenticated():
+    return HttpResponseRedirect(reverse('log.views.index'))
+
+  if request.method == 'POST':
+    form = ResendActivationForm(request.POST)
+
+    if form.is_valid():
+      email = form.cleaned_data["email"]
+      user = User.objects.get(email=email, is_active=0)
+
+      if not user:
+        form._errors["email"] = ("No account found for this email or already activated!",)
+      else:
+        profile = RegistrationProfile.objects.get(user=user)
+
+        if profile.activation_key_expired():
+          salt = sha_constructor(str(random())).hexdigest()[:5]
+          profile.activation_key = sha_constructor(salt+user.username).hexdigest()
+          user.date_joined = datetime.datetime.now()
+          user.save()
+          profile.save()
+        else:
+          # as long as the key is not expired, don't let them send a new one
+          # this is to avoid abuse
+          expiration_date = datetime.timedelta(days=settings.ACCOUNT_ACTIVATION_DAYS)
+          date = user.date_joined + expiration_date - datetime.datetime.now()
+          if date > datetime.timedelta(days=1):
+            time_to_wait = "two days"
+          elif date > datetime.timedelta(hours=8):
+            time_to_wait = "a day"
+          elif date > datetime.timedelta(hours=3):
+            time_to_wait = "a few hours"
+          else:
+            time_to_wait = "an hour"
+
+          return render_to_response("registration/activation_resend_complete.html", 
+              RequestContext(request, {'success': False, 'time_to_wait': time_to_wait}))
+
+        if Site._meta.installed:
+          site = Site.objects.get_current()
+        else:
+          site = RequestSite(request)
+
+        profile.send_activation_email(site)
+
+        return render_to_response("registration/activation_resend_complete.html", 
+            RequestContext(request, {'success': True}))
+  else:
+    form = ResendActivationForm()
+
+  return render_to_response("registration/activation_resend_form.html",
+      RequestContext(request, {'form': form}))
+        
 ### MISC News
 def news(request):
   news = News.objects.all()

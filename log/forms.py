@@ -1,4 +1,4 @@
-from django.forms import ModelForm, CharField, Textarea
+from django.forms import ModelForm, CharField, Textarea, Form, EmailField
 from log.models import Log, LogItem, Comment
 from django.contrib.auth.models import User
 
@@ -27,3 +27,6 @@ class CommentForm(ModelForm):
   class Meta:
     model = Comment
     fields = ('text',)
+
+class ResendActivationForm(Form):
+  email = EmailField(required=True)
