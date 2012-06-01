@@ -85,7 +85,7 @@
             <td>{{ log.summoner_name }}</td>
             <td>{{ log.get_region_display }}</td>
             <td>{{ log.current_elo }}</td>
-            <td>{{ log.total_games }}</td>
+            <td>{{ log.total_games }} ({{ log.games_won }}/{{ log.games_lost }}/{{log.games_left }})</td>
             <td>{{ log.win_loss_ratio }}</td>
           </tr>
           {% endfor %}

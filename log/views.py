@@ -1,7 +1,7 @@
 # Create your views here.
 
 from django.http import HttpResponse, HttpResponseRedirect
-from log.models import Log, LogItem, News, Comment
+from log.models import Log, LogItem, News, Comment, OUTCOME
 from log.forms import LogForm, LogItemForm, CommentForm, ResendActivationForm
 from django.template import Context, loader, RequestContext
 from django.shortcuts import render_to_response, get_object_or_404
@@ -26,10 +26,15 @@ def index(request):
   news = News.objects.latest()
   logs = Log.objects.all()
   users = User.objects.all()
-  logitems_won = LogItem.objects.filter(win__exact=True)
-  logitems_lost = LogItem.objects.filter(win__exact=False)
+  logitems_won = LogItem.objects.filter(outcome=OUTCOME.WIN)
+  logitems_lost = LogItem.objects.filter(outcome=OUTCOME.LOSS)
+  logitems_left = LogItem.objects.filter(outcome=OUTCOME.LEAVE)
   logitems_count = logitems_won.count() + logitems_lost.count()
   wl_ratio = "%.3f" % (float(logitems_won.count())/float(logitems_lost.count()))
+  
+  # do this after wl_ratio calculation
+  logitems_count += logitems_left.count()
+
   public_logs = Log.objects.filter(public__exact=True)
   public_logs_on_list = Log.objects.filter(public__exact=True, show_on_public_list__exact=True)
 
@@ -40,6 +45,7 @@ def index(request):
   c['users'] = users
   c['logitems_won'] = logitems_won
   c['logitems_lost'] = logitems_lost
+  c['logitems_left'] = logitems_left
   c['logitems_count'] = logitems_count
   c['wl_ratio'] = wl_ratio
 
@@ -169,10 +175,10 @@ def export_log(request, log_id):
   response['Content-Disposition'] = 'attachment; filename=export_%s.csv' % name
 
   writer = csv.writer(response)
-  writer.writerow(['Champion', 'Elo after', 'Remarks'])
+  writer.writerow(['Champion', 'Elo after', 'Outcome', 'Remarks'])
 
   for item in log.logitem_set.all():
-    writer.writerow([item.champion.name, item.elo, item.text])
+    writer.writerow([item.champion.name, item.elo, item.get_outcome_display(), item.text])
 
   return response
 

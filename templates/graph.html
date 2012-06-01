@@ -11,7 +11,7 @@
             Back
           </a>
         {% else %}
-          <a class="btn" href="/{{ log_id }}">
+          <a class="btn" href="{% url log.views.view log_id %}">
             <i class="icon-arrow-left"></i>
             Back
           </a>

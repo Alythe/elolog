@@ -18,6 +18,17 @@ REGION_CHOICES = (
   ('SEA', 'Southeast Asia'),
 )
 
+class OUTCOME:
+  WIN = 0
+  LOSS = 1
+  LEAVE = 2
+
+GAME_OUTCOME_CHOICES = (
+  (OUTCOME.WIN, 'Win'),
+  (OUTCOME.LOSS, 'Loss'),
+  (OUTCOME.LEAVE, 'Leave/Dodge'),
+)
+
 class Champion(models.Model):
   name = models.CharField(max_length = 100)
   image = models.CharField(max_length = 100)
@@ -44,28 +55,25 @@ class Log(models.Model):
   initial_elo = models.PositiveIntegerField(default=0)
   initial_games_won = models.PositiveIntegerField(default=0)
   initial_games_lost = models.PositiveIntegerField(default=0)
+  initial_games_left = models.PositiveIntegerField(default=0)
   public = models.BooleanField(default=False)
   public_hash = models.CharField(max_length = 10, default = "", blank=True)
   show_on_public_list = models.BooleanField(default=False)
 
   def total_games(self):
-    return self.games_won() + self.games_lost()
+    return self.games_won() + self.games_lost() + self.games_left()
 
   def games_won(self):
     count = self.initial_games_won
-    for item in self.logitem_set.all():
-      if item.win:
-        count += 1
-
-    return count
+    return self.logitem_set.filter(outcome=OUTCOME.WIN).count() + count
 
   def games_lost(self):
     count = self.initial_games_lost
-    for item in self.logitem_set.all():
-      if not item.win:
-        count += 1
+    return self.logitem_set.filter(outcome=OUTCOME.LOSS).count() + count
 
-    return count
+  def games_left(self):
+    count = self.initial_games_left
+    return self.logitem_set.filter(outcome=OUTCOME.LEAVE).count() + count
 
   def win_loss_ratio(self):
     if self.games_won() > 0 and self.games_lost() > 0:
@@ -99,11 +107,20 @@ class LogItem(models.Model):
   champion = models.ForeignKey(Champion)
   elo = models.IntegerField()
   text = models.TextField()
-  win = models.BooleanField()
+  outcome = models.IntegerField(default=0, choices=GAME_OUTCOME_CHOICES)
   date = models.DateTimeField('date created', auto_now_add=True, blank=True)
 
   def __unicode__(self):
     return self.text
+
+  def is_win(self):
+    return self.outcome==OUTCOME.WIN
+  
+  def is_loss(self):
+    return self.outcome==OUTCOME.LOSS
+
+  def is_leave(self):
+    return self.outcome==OUTCOME.LEAVE
 
   class Meta:
     ordering = ['date']

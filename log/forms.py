@@ -5,12 +5,12 @@ from django.contrib.auth.models import User
 class LogForm(ModelForm):
   class Meta:
     model = Log
-    fields = ('summoner_name', 'region', 'initial_elo', 'initial_games_won', 'initial_games_lost', 'show_on_public_list')
+    fields = ('summoner_name', 'region', 'initial_elo', 'initial_games_won', 'initial_games_lost', 'initial_games_left', 'show_on_public_list')
 
 class LogItemForm(ModelForm):
   class Meta:
     model = LogItem
-    fields = ('champion', 'elo', 'text', 'win')
+    fields = ('champion', 'elo', 'text', 'outcome')
 
 class SignupForm(ModelForm):
   class Meta:

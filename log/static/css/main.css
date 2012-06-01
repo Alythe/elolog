@@ -7,11 +7,17 @@
 }
 
 .background-red {
-  background-color: #ffe7e7;
+  /*background-color: #ffe7e7;*/
+  background-color: #ffcccc;
 }
 
 .background-green {
-  background-color: #ecffe7;
+  /*background-color: #ecffe7;*/
+  background-color: #d7ffcc;
+}
+
+.background-yellow {
+  background-color: #ffefcc;
 }
 
 .pages ul {
@@ -29,4 +35,15 @@
 .page-header h1 img {
   margin-right: 10px;
   padding-bottom: 9px;
+}
+
+.flat-list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.flat-list li {
+  display: inline;
+  margin-right: 10px;
 }

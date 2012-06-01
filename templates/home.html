@@ -48,7 +48,7 @@ h2 img {
           <div class="span5"> 
             <h2><img src="{{ STATIC_URL }}img/icons/glyphicons_041_charts.png"/>Statistic</h2>
             <p>We are currently storing <strong>{{ logs.count }}</strong> personal logs from <strong>{{ users.count }}</strong> users.</p>
-            <p>Of a total of <strong>{{ logitems_count }}</strong> games, <strong>{{ logitems_won.count }}</strong> were won. That's a Win/Loss-Ratio of <strong>{{ wl_ratio }}</strong>.</p>
+            <p>Of a total of <strong>{{ logitems_count }}</strong> games, <strong>{{ logitems_won.count }}</strong> were won, <strong>{{ logitems_lost.count }}</strong> were lost. That's a Win/Loss-Ratio of <strong>{{ wl_ratio }}</strong>.</p>
             <p><strong>{{ public_logs.count }}</strong> logs are viewable publicly viewable, <strong>{{ public_logs_on_list.count }}</strong> of them are <a href="{% url public_logs %}">listed</a>.
           </div>
         </div>

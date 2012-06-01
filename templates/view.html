@@ -5,6 +5,12 @@
         <div class="page-header">
           <h1>{{ log.summoner_name }} <small>Overview</small></h1>
         </div>
+        <ul class="flat-list">
+          <li>Current Elo: <strong>{{ log.current_elo }}</strong></li>
+          <li>Games played: <strong>{{ log.total_games }} ({{ log.games_won }}/{{ log.games_lost }}/{{log.games_left }})</strong></li>
+          <li>Win/Loss-Ratio: <strong>{{ log.win_loss_ratio }}</strong>
+        </ul>
+        <hr/>
         {% if not log_item_list %}
         {% if not is_public %}
         <div class="alert alert-success">
@@ -119,10 +125,12 @@
         </thead>
         <tbody>
           {% for item in log_item_list %}
-          {% if item.win %}
+          {% if item.is_win %}
           <tr id="{{ item.id }}" class="background-green">
-          {% else %}
+          {% elif item.is_loss %}
           <tr id="{{ item.id }}" class="background-red">
+          {% else %}
+          <tr id="{{ item.id }}" class="background-yellow">
           {% endif %}
             <td>{{ item.nr }}</td>
             <td><img src="{{ STATIC_URL }}img/champions/{{ item.champion.image }}"></img></td>

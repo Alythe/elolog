@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 {% block title %} - Edit/New log{% endblock %}
-
+{% block style %}
+.number input {
+  width: 30px;
+}
+{% endblock %}
 {% block content %}
         <div class="page-header">
           <h1>{{ log.summoner_name }}</h1>
@@ -21,22 +25,23 @@
             {{ form.region }}
           </div>
 
-          <div class="fieldWrapper">
+          <div class="fieldWrapper number">
             {{ form.initial_elo.errors }}
             <label for="id_summoner_name">Inital Elo:</label>
             <div class="alert">
-              <strong>Warning:</strong> This should be your Elo before you started using EloLog. A different value may lead to some minor calculation errors.
+              <strong>Warning:</strong> This should be your Elo before you started using EloLog. A different value may lead to some minor calculation errors.<br/>
             {{ form.initial_elo }}
             </div>
           </div>
 
-          <div class="fieldWrapper">
+          <div class="fieldWrapper number">
             {{ form.initial_games_won.errors }}
             {{ form.initial_games_lost.errors }}
-            <label for="id_summoner_name">Games Won/Lost:</label>
+            {{ form.initial_games_left.errors }}
+            <label for="id_summoner_name">Games Won/Lost/Left:</label>
             <div class="alert">
-              <strong>Warning:</strong> This should be your won/lost games from before you started using EloLog. Different values may lead to some minor calculation errors. 
-              {{ form.initial_games_won }} / {{ form.initial_games_lost }}
+              <strong>Warning:</strong> This should be your won/lost/left games from before you started using EloLog. Different values cause the Win/Loss ratio to be incorrect.<br/>
+              {{ form.initial_games_won }} / {{ form.initial_games_lost }} / {{ form.initial_games_left }}
             </div>
           </div>
 
