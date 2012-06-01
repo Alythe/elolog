@@ -296,8 +296,20 @@ def news_comments(request, news_id):
 
     if form.is_valid():
       form.save()
-    
+      return HttpResponseRedirect(reverse('log.views.news_comments', args=[news_id]))
+
   else:
     form = CommentForm()
 
-  return render_to_response('news/news_detail.html', RequestContext(request, {'news_item': news, 'form': form}))
+  comments_all = news.comment_set.all()
+  paginator = Paginator(comments_all, 10)
+  page = request.GET.get('p')
+
+  try:
+    comment_list = paginator.page(page)
+  except PageNotAnInteger:
+    comment_list = paginator.page(1)
+  except EmptyPage:
+    comment_list = paginator.page(paginator.num_pages)
+
+  return render_to_response('news/news_detail.html', RequestContext(request, {'news_item': news, 'comment_list': comment_list, 'form': form}))

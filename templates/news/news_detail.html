@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load get_range %}
 {% block title %} - News{% endblock %}
 
 {% block style %}
@@ -28,7 +29,34 @@
 
         {% if news_item.comments_allowed %}
         <strong>Comments:</strong> 
-        {% for comment in news_item.comment_set.all %}
+
+        {# PAGINATION #}
+        {% if comment_list.paginator.num_pages > 1 %}
+        <div class="pages">
+          {% if comment_list.has_previous %}
+          <a href="?p={{ comment_list.previous_page_number }}">Previous</a>
+          {% else %}
+          Previous
+          {% endif %}
+          <ul>
+            {% for page in comment_list.paginator.num_pages|get_range:1 %}
+            {% if page = comment_list.number %}
+              <li><strong>{{ page }}</strong></li>
+        {% else %}
+            <li><a href="?p={{ page }}">{{ page }}</a></li>
+        {% endif %}
+        {% endfor %}
+          </ul>
+          {% if comment_list.has_next %}
+          <a href="?p={{ comment_list.next_page_number }}">Next</a>
+          {% else %}
+          Next
+          {% endif %}
+        </div>
+        {% endif %}
+        {# PAGINATION_END #}
+
+        {% for comment in comment_list %}
         <div class="comment">
           <div class="comment-header">
             
