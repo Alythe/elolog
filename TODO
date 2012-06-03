@@ -11,6 +11,10 @@
 * Graph, der Gewinne auf Uhrzeit abbildet
 * Globale Statistik (Durchschnitts-Elo jede Woche)
 
+- v0.21
+* FIX: Fixed typo on front page
+* FIX: Champions are now ordered alphabetically
+
 - v0.2b
 * NEW: Users can now comment on news
 * NEW: Show Sign in button when users are not logged in

@@ -16,7 +16,7 @@ framework.
 import os
 import sys
 
-path = '/opt/beta.elolog/'
+path = '/opt/elolog/'
 
 if path not in sys.path:
   sys.path.append(path)

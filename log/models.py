@@ -41,6 +41,9 @@ class Champion(models.Model):
   def __unicode__(self):
     return self.name
 
+  class Meta:
+    ordering = ['name']
+
 class UserProfile(models.Model):
   user = models.OneToOneField(User)
   last_activity = models.DateTimeField(default=datetime.datetime.fromtimestamp(0))
