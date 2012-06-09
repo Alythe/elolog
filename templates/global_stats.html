@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %} - Global statistics{% endblock %}
+
+{% block header %}
+<script src="{{ STATIC_URL }}js/flot/jquery.flot.js"></script>
+{% endblock %}
+
+{% block style %}
+.global_graph {
+  width: 950px;
+  height: 500px;
+}
+{% endblock %}
+
+{% block content %}
+  <h2>Games</h2>
+  <div id="graph_games" class="global_graph"></div>
+  
+  <h2>Users</h2>
+  <div id="graph_users" class="global_graph"></div>
+
+  <h2>W/L-Ratio</h2>
+  <div id="graph_wl_ratio" class="global_graph"></div>
+  
+  <h2>Users online</h2>
+  <div id="graph_users_online" class="global_graph"></div>
+  
+  <h2>Users online - Time of day</h2>
+  <div id="graph_users_online_hourly" class="global_graph"></div>
+
+  <script>
+    function elolog_date_formatter(inputTimeStamp) {
+      d = new Date();
+      d.setTime(inputTimeStamp);
+      h_ = d.getHours();
+      m_ = d.getMinutes();
+      h = ((h_ < 10) ? "0" + h_ : h_);
+      m = ((m_ < 10) ? "0" + m_ : m_);
+      // Return your formated date as you like.
+      //return inputTimeStamp;
+      return d.getDate() + "." + (d.getMonth()+1) + "." + d.getFullYear() + " " + h + ":" + m;
+    }
+
+    $(document).ready(function()
+    {
+      $.plot($("#graph_games"), [[{{ data_games }}]], {points: { show: false }, lines: { show: true }, xaxis: { tickFormatter: elolog_date_formatter }});
+      $.plot($("#graph_users"), [[{{ data_users }}]], {points: { show: false }, lines: { show: true }, xaxis: { tickFormatter: elolog_date_formatter }});
+      $.plot($("#graph_wl_ratio"), [[{{ data_wl_ratio }}]], {points: { show: false }, lines: { show: true }, xaxis: { tickFormatter: elolog_date_formatter }});
+      $.plot($("#graph_users_online"), [[{{ data_users_online }}]], {points: { show: false }, lines: { show: true }, xaxis: { tickFormatter: elolog_date_formatter }});
+      $.plot($("#graph_users_online_hourly"), [[{{ data_users_online_hourly }}]], {points: { show: false }, lines: { show: false }, bars: { show: true }, xaxis: { ticks: 24, tickDecimals: 0}});
+    });
+  </script>
+
+{% endblock %}

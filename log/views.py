@@ -1,7 +1,7 @@
 # Create your views here.
 
 from django.http import HttpResponse, HttpResponseRedirect
-from log.models import Log, LogItem, News, Comment, OUTCOME, UserProfile
+from log.models import Log, LogItem, News, Comment, OUTCOME, UserProfile, StatisticEntry
 from log.forms import LogForm, LogItemForm, CommentForm, ResendActivationForm
 from django.template import Context, loader, RequestContext
 from django.shortcuts import render_to_response, get_object_or_404
@@ -19,6 +19,7 @@ from random import random
 import csv
 import unicodedata
 import datetime
+import time
 
 ### LOG Viewing ###
 def index(request):
@@ -388,3 +389,39 @@ def news_comments(request, news_id):
     comment_list = paginator.page(paginator.num_pages)
 
   return render_to_response('news/news_detail.html', RequestContext(request, {'news_item': news, 'comment_list': comment_list, 'form': form}))
+
+### MISC Global stats
+def global_stats(request):
+  if not request.user.is_authenticated() or not request.user.is_staff:
+    return HttpREsponseRedirect(reverse('log.views.index'))
+
+  stats = StatisticEntry.objects.all() 
+  
+  data_games = []
+  data_users = []
+  data_wl_ratio = []
+  data_users_online = []
+  users_online_hourly = 24*[0]
+
+  tmp_count = 0
+  for entry in stats:
+    timestamp = int(time.mktime(entry.date.timetuple())*1000)
+    data_games.append("[%d, %d]" % (timestamp, entry.game_count))
+    data_users.append("[%d, %d]" % (timestamp, entry.user_count))
+    data_wl_ratio.append("[%d, %f]" % (timestamp, entry.wl_ratio))
+    data_users_online.append("[%d, %d]" % (timestamp, entry.users_online))
+    users_online_hourly[entry.date.hour] += entry.users_online
+    if entry.users_online > 0:
+      tmp_count += 1
+  
+  data_users_online_hourly = 24*[""]
+  for i in range(0, 23):
+    data_users_online_hourly[i] = "[%d, %f]" % (i, float(users_online_hourly[i]) / float(tmp_count))
+
+  return render_to_response('global_stats.html', RequestContext(request, {
+    'data_games': ','.join(data_games),
+    'data_users': ','.join(data_users),
+    'data_wl_ratio': ','.join(data_wl_ratio),
+    'data_users_online': ','.join(data_users_online),
+    'data_users_online_hourly': ','.join(data_users_online_hourly),
+     }))

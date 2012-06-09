@@ -40,6 +40,7 @@ urlpatterns = patterns('',
     url(r'^about/$', direct_to_template, {'template': 'about.html'}, name="about"),
     url(r'^news/$', 'log.views.news'),
     url(r'^news/(?P<news_id>\d+)/$', 'log.views.news_comments'),
+    url(r'^stats/$', 'log.views.global_stats'),
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
     #(r'^forum/', include('djangobb_forum.urls', namespace='djangobb')),
