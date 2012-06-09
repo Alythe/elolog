@@ -12,6 +12,7 @@
 * Globale Statistik (Durchschnitts-Elo jede Woche)
 
 - v0.21
+* NEW: Added users online to statistic
 * FIX: Fixed typo on front page
 * FIX: Champions are now ordered alphabetically
 

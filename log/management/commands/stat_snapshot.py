@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand, CommandError
-from log.models import Log, LogItem, StatisticEntry, OUTCOME
+from log.models import Log, LogItem, StatisticEntry, OUTCOME, UserProfile
 from django.contrib.auth.models import User
 import datetime
 
@@ -16,6 +16,9 @@ class Command(BaseCommand):
     logitems_left = LogItem.objects.filter(outcome=OUTCOME.LEAVE)
     total_games = logitems_won.count() + logitems_lost.count()
     wl_ratio = (float(logitems_won.count())/float(logitems_lost.count()))
+    
+    logged_in_threshold = datetime.datetime.now() - datetime.timedelta(minutes=10)
+    logged_in_profiles = UserProfile.objects.filter(last_activity__gte=logged_in_threshold)
 
     # do this after wl_ratio calculation
     total_games += logitems_left.count()
@@ -29,6 +32,7 @@ class Command(BaseCommand):
     entry.game_loss_count = logitems_lost.count()
     entry.game_leave_count = logitems_left.count()
     entry.wl_ratio = wl_ratio
+    entry.users_online = logged_in_profiles.count()
 
     entry.save()
 
