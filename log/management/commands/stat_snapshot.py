@@ -20,6 +20,9 @@ class Command(BaseCommand):
     logged_in_threshold = datetime.datetime.now() - datetime.timedelta(minutes=10)
     logged_in_profiles = UserProfile.objects.filter(last_activity__gte=logged_in_threshold)
 
+    active_threshold = datetime.datetime.now() - datetime.timedelta(days=3)
+
+    active_profiles = UserProfile.objects.filter(last_activity__gte=active_threshold)
     # do this after wl_ratio calculation
     total_games += logitems_left.count()
 
@@ -33,6 +36,7 @@ class Command(BaseCommand):
     entry.game_leave_count = logitems_left.count()
     entry.wl_ratio = wl_ratio
     entry.users_online = logged_in_profiles.count()
+    entry.active_users = active_profiles.count()
 
     entry.save()
 

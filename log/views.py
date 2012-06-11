@@ -402,6 +402,7 @@ def global_stats(request):
   data_wl_ratio = []
   data_users_online = []
   users_online_hourly = 24*[0]
+  data_active_users = []
 
   tmp_count = 0
   for entry in stats:
@@ -410,6 +411,7 @@ def global_stats(request):
     data_users.append("[%d, %d]" % (timestamp, entry.user_count))
     data_wl_ratio.append("[%d, %f]" % (timestamp, entry.wl_ratio))
     data_users_online.append("[%d, %d]" % (timestamp, entry.users_online))
+    data_active_users.append("[%d, %d]" % (timestamp, entry.active_users))
     users_online_hourly[entry.date.hour] += entry.users_online
     if entry.users_online > 0:
       tmp_count += 1
@@ -424,4 +426,5 @@ def global_stats(request):
     'data_wl_ratio': ','.join(data_wl_ratio),
     'data_users_online': ','.join(data_users_online),
     'data_users_online_hourly': ','.join(data_users_online_hourly),
+    'data_active_users': ','.join(data_active_users),
      }))
