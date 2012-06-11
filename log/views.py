@@ -393,7 +393,7 @@ def news_comments(request, news_id):
 ### MISC Global stats
 def global_stats(request):
   if not request.user.is_authenticated() or not request.user.is_staff:
-    return HttpREsponseRedirect(reverse('log.views.index'))
+    return HttpResponseRedirect(reverse('log.views.index'))
 
   stats = StatisticEntry.objects.all() 
   
