@@ -4,6 +4,7 @@ from django.db.models.signals import post_save
 from django.contrib.sites.models import Site
 from django.core.validators import MaxLengthValidator
 
+
 import hashlib
 import unicodedata
 import datetime
@@ -107,24 +108,32 @@ class Log(models.Model):
       return ""
 
   def current_elo(self):
+    from custom_fields.types import FieldTypes
     if self.logitem_set.count() == 0:
       return self.initial_elo
     else:
-      return self.logitem_set.latest().elo
+      elo_field = self.logcustomfield_set.get(type=FieldTypes.ELO)
+      
+      # log has an elo field
+      if elo_field is not None:
+        elo = self.logitem_set.latest().logcustomfieldvalue_set.get(custom_field=elo_field)
+        return elo.get_value()
+      else:
+        return 0
 
   def __unicode__(self):
     return self.summoner_name
 
 class LogItem(models.Model):
   log = models.ForeignKey(Log)
-  champion = models.ForeignKey(Champion)
-  elo = models.IntegerField()
-  text = models.TextField()
+  #champion = models.ForeignKey(Champion)
+  #elo = models.IntegerField()
+  #text = models.TextField()
   outcome = models.IntegerField(default=0, choices=GAME_OUTCOME_CHOICES)
   date = models.DateTimeField('date created', auto_now_add=True, blank=True)
 
   def __unicode__(self):
-    return self.text
+    return "Entry #%d, Log %s" % (self.id, self.log.summoner_name)
 
   def is_win(self):
     return self.outcome==OUTCOME.WIN
@@ -135,9 +144,48 @@ class LogItem(models.Model):
   def is_leave(self):
     return self.outcome==OUTCOME.LEAVE
 
+  def get_elo(self):
+    from custom_fields.types import FieldTypes
+    elo_field = self.log.logcustomfield_set.get(type=FieldTypes.ELO)
+    if elo_field is not None:
+      print(elo_field)
+      elo = self.logcustomfieldvalue_set.get(custom_field=elo_field)
+      return int(elo.get_value())
+    else:
+      return 0
+
   class Meta:
     ordering = ['date']
     get_latest_by = 'date'
+
+class LogCustomField(models.Model):
+  from custom_fields.types import FIELD_TYPE_CHOICES, FieldTypes, FIELD_TYPES
+  log = models.ForeignKey(Log)
+  type = models.IntegerField(choices=FIELD_TYPE_CHOICES)
+  name = models.CharField(max_length=255, default="")
+  
+  def get_form_field(self, *args, **kwargs):
+    from custom_fields.types import FIELD_TYPES
+    return FIELD_TYPES[self.type](*args, **kwargs)
+
+  def __unicode__(self):
+    return "#%d '%s' (%s)" % (self.id, self.name, self.get_type_display())
+
+class LogCustomFieldValue(models.Model):
+  custom_field = models.ForeignKey(LogCustomField)
+  log_item = models.ForeignKey(LogItem)
+  _value = models.TextField(db_column='value', blank=True)
+
+  def set_value(self, value):
+    self._value = str(value)
+
+  def get_value(self):
+    return self._value
+
+  def get_custom_field(self):
+    return self.custom_field
+
+  data = property(get_value, set_value)
 
 class News(models.Model):
   date = models.DateTimeField()

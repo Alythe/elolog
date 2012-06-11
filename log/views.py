@@ -3,6 +3,7 @@
 from django.http import HttpResponse, HttpResponseRedirect
 from log.models import Log, LogItem, News, Comment, OUTCOME, UserProfile, StatisticEntry
 from log.forms import LogForm, LogItemForm, CommentForm, ResendActivationForm
+from log.custom_fields.types import FieldTypes
 from django.template import Context, loader, RequestContext
 from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.auth import logout, authenticate, login
@@ -103,16 +104,16 @@ def view(request, log_id, public=False):
   # and write everything back. That's O(n^2) and pretty fucked up
   # but it works for now(tm)
 
+  field_list = log.logcustomfield_set.all()
+  has_elo_field = field_list.get(type=FieldTypes.ELO) != None
+
   log_item_list = log.logitem_set.all()
 
   start_elo = log.initial_elo
-  nr = 1
   elo_gain = []
   for item in log_item_list:
-    item.nr = nr
-    elo_gain.append(item.elo - start_elo)
-    start_elo = item.elo
-    nr += 1
+    elo_gain.append(item.get_elo() - start_elo)
+    start_elo = item.get_elo()
 
   index = 0
   log_item_list_r = log_item_list.reverse()
@@ -122,9 +123,30 @@ def view(request, log_id, public=False):
     item.elo_gain = elo_gain[size - 1 - index]
     index += 1
 
+  paginator = Paginator(log_item_list_r, 25)
+  page = request.GET.get('p')
+
+  try:
+    log_item_list = paginator.page(page)
+  except PageNotAnInteger:
+    log_item_list = paginator.page(1)
+  except EmptyPage:
+    log_item_list = paginator.page(paginator.num_pages)
+
+  for item in log_item_list:
+    item.field_values = []
+    for field in field_list:
+      field_value = item.logcustomfieldvalue_set.get(custom_field=field)
+
+      if field_value.custom_field.type == FieldTypes.ELO:
+        item.field_values.append(field.get_form_field().render(item.elo_gain, field_value.get_value()))
+      else:
+        item.field_values.append(field.get_form_field().render(field_value.get_value()))
+
   c = RequestContext(request, {
     'log': log,
-    'log_item_list': log_item_list_r,
+    'log_item_list': log_item_list,
+    'field_list': field_list,
     'user': request.user.id,
     'is_public': public
   })

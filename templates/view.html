@@ -117,9 +117,9 @@
         <thead>
           <tr>
             <th>#</th>
-            <th>Champion</th>
-            <th>Elo Gain</th>
-            <th>Text</th>
+            {% for field in field_list %}
+            <th>{{ field.name }}</th>
+            {% endfor %}
             <th></th>
           </tr>
         </thead>
@@ -133,11 +133,14 @@
           <tr id="{{ item.id }}" class="background-yellow">
           {% endif %}
             <td>{{ item.nr }}</td>
-            <td><img src="{{ STATIC_URL }}img/champions/{{ item.champion.image }}"></img></td>
+            {% for value in item.field_values %}
+            <td>{{ value|safe }}</td>
+            {% endfor %}
+            <!--<td><img src="{{ STATIC_URL }}img/champions/{{ item.champion.image }}"></img></td>
             <td>
               <span class={% if item.elo_gain < 0 %} "shade-red" {% else %} "shade-green" {% endif %}>{{ item.elo_gain }}</span>
             </td>
-            <td>{{ item.text|linebreaks }}</td>
+            <td>{{ item.text|linebreaks }}</td>-->
             <td>
               {% if not is_public %}
               <div class="btn-group">

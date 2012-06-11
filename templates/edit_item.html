@@ -9,29 +9,13 @@
           {{ form.errors }}
           {% csrf_token %}
 
+          {% for field in form %}
           <div class="fieldWrapper">
-            {{ form.champion.errors }}
-            <label for="id_champion">Champion:</label>
-            {{ form.champion }}
-          </div>
-
-          <div class="fieldWrapper">
-            {{ form.elo.errors }}
-            <label for="id_elo">Elo after game:</label>
-            {{ form.elo }}
-          </div>
-
-          <div class="fieldWrapper">
-            {{ form.outcome.errors }}
-            <label for="id_win">Outcome:</label>
-            {{ form.outcome }}
-          </div>
-
-          <div class="fieldWrapper">
-            {{ form.text.errors }}
-            <label for="id_text">Remarks:</label>
-            {{ form.text }}
-          </div>
+              {{ field.errors }}
+              {{ field.label_tag }}
+              {{ field }}
+            </div>
+          {% endfor %}
 
           <input type="submit" class="btn btn-primary" value="Save" />
 
