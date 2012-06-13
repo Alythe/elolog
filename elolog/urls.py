@@ -30,6 +30,13 @@ urlpatterns = patterns('',
     url(r'^logs/(?P<log_id>\d+)/new/$', 'log.views.edit_item'),
     url(r'^logs/(?P<log_id>\d+)/export/$', 'log.views.export_log'),
     url(r'^logs/(?P<log_id>\d+)/graph/$', 'log.views.graph_log'),
+    
+    # custom fields
+    url(r'^logs/(?P<log_id>\d+)/fields/$', 'log.views.view_fields'),
+    url(r'^logs/(?P<log_id>\d+)/fields/new/$', 'log.views.edit_field'),
+    url(r'^logs/(?P<log_id>\d+)/fields/edit/(?P<field_id>\d+)/$', 'log.views.edit_field'),
+    url(r'^logs/(?P<log_id>\d+)/fields/delete/(?P<field_id>\d+)/$', 'log.views.delete_field'),
+    
     url(r'^new/$', 'log.views.edit_log'),
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),

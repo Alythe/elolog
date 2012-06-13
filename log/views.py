@@ -1,8 +1,8 @@
 # Create your views here.
 
 from django.http import HttpResponse, HttpResponseRedirect
-from log.models import Log, LogItem, News, Comment, OUTCOME, UserProfile, StatisticEntry
-from log.forms import LogForm, LogItemForm, CommentForm, ResendActivationForm
+from log.models import Log, LogItem, News, Comment, OUTCOME, UserProfile, StatisticEntry, LogCustomField
+from log.forms import LogForm, LogItemForm, CommentForm, ResendActivationForm, CustomFieldForm
 from log.custom_fields.types import FieldTypes
 from django.template import Context, loader, RequestContext
 from django.shortcuts import render_to_response, get_object_or_404
@@ -105,7 +105,7 @@ def view(request, log_id, public=False):
   # but it works for now(tm)
 
   field_list = log.logcustomfield_set.all()
-  has_elo_field = field_list.get(type=FieldTypes.ELO) != None
+  has_elo_field = field_list.filter(type=FieldTypes.ELO).count() > 0
 
   log_item_list = log.logitem_set.all()
 
@@ -136,12 +136,16 @@ def view(request, log_id, public=False):
   for item in log_item_list:
     item.field_values = []
     for field in field_list:
-      field_value = item.logcustomfieldvalue_set.get(custom_field=field)
-
-      if field_value.custom_field.type == FieldTypes.ELO:
-        item.field_values.append(field.get_form_field().render(item.elo_gain, field_value.get_value()))
+      field_queryset = item.logcustomfieldvalue_set.filter(custom_field=field)
+      
+      if field_queryset.count() == 0:
+        item.field_values.append("")
       else:
-        item.field_values.append(field.get_form_field().render(field_value.get_value()))
+        field_value = field_queryset[0]
+        if field_value.custom_field.type == FieldTypes.ELO:
+          item.field_values.append(field.get_form_field().render(item.elo_gain, field_value.get_value()))
+        else:
+          item.field_values.append(field.get_form_field().render(field_value.get_value()))
 
   c = RequestContext(request, {
     'log': log,
@@ -321,6 +325,64 @@ def edit_log(request, log_id=None):
     form = LogForm(instance=log)
 
   return render_to_response('edit_log.html', RequestContext(request, {'form': form, 'log': log}))
+
+def view_fields(request, log_id):
+  if not request.user.is_authenticated():
+    return HttpResponseREdirect(reverse('log.views.index'))
+
+  log = get_object_or_404(Log, pk=log_id)
+
+  if not request.user.id == log.user.id:
+    return HttpResponseRedirect(reverse('log.views.index'))
+
+  field_list = log.logcustomfield_set.all()
+
+  return render_to_response('view_fields.html', RequestContext(request, {'log': log, 'field_list': field_list}))
+
+def edit_field(request, log_id, field_id=None):
+  if not request.user.is_authenticated():
+    return HttpResponseRedirect(reverse('log.views.index'))
+  
+  log = get_object_or_404(Log, pk=log_id)
+  
+  if not request.user.id == log.user.id:
+    return HttpResponseRedirect(reverse('log.views.index'))
+
+  if field_id:
+    field = get_object_or_404(LogCustomField, pk=field_id)
+  else:
+    field = LogCustomField(log=log)
+
+  if request.method == 'POST':
+    form = CustomFieldForm(request.POST, instance=field)
+    
+    if form.is_valid():
+      form.save()
+
+      # TODO do casting on all field values defined for the log!
+      return HttpResponseRedirect(reverse('log.views.view_fields', args=[log_id]))
+  else:
+    form = CustomFieldForm(instance=field)
+
+  return render_to_response('edit_field.html', RequestContext(request, {'form': form, 'log': log, 'field': field}))
+
+def delete_field(request, log_id, field_id):
+  if not request.user.is_authenticated():
+    return HttpResponseRedirect(reverse('log.views.index'))
+
+  log = get_object_or_404(Log, pk=log_id)
+  
+  if not request.user.id == log.user.id:
+    return HttpResponseRedirect(reverse('log.views.index'))
+
+  try:
+    field = log.logcustomfield_set.get(id=field_id)
+  except ObjectDoesNotExist:
+    return HttpResponseRedirect(reverse('log.views.view', args=[log_id]))
+
+  field.delete()
+
+  return HttpResponseRedirect(reverse('log.views.view', args=[log_id]))
 
 ### ACCOUNT Management
 def resend_activation(request):

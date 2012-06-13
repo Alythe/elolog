@@ -112,14 +112,17 @@ class Log(models.Model):
     if self.logitem_set.count() == 0:
       return self.initial_elo
     else:
-      elo_field = self.logcustomfield_set.get(type=FieldTypes.ELO)
+
+      elo_field_queryset = self.logcustomfield_set.filter(type=FieldTypes.ELO)
       
       # log has an elo field
-      if elo_field is not None:
-        elo = self.logitem_set.latest().logcustomfieldvalue_set.get(custom_field=elo_field)
-        return elo.get_value()
-      else:
-        return 0
+      if elo_field_queryset.count() > 0:
+        elo_queryset = self.logitem_set.latest().logcustomfieldvalue_set.filter(custom_field=elo_field_queryset[0])
+
+        if elo_queryset.count() == 1:
+          return elo_queryset[0].get_value()
+      
+      return 0
 
   def __unicode__(self):
     return self.summoner_name
@@ -146,13 +149,14 @@ class LogItem(models.Model):
 
   def get_elo(self):
     from custom_fields.types import FieldTypes
-    elo_field = self.log.logcustomfield_set.get(type=FieldTypes.ELO)
-    if elo_field is not None:
-      print(elo_field)
-      elo = self.logcustomfieldvalue_set.get(custom_field=elo_field)
-      return int(elo.get_value())
-    else:
-      return 0
+    elo_field_queryset = self.log.logcustomfield_set.filter(type=FieldTypes.ELO)
+
+    if elo_field_queryset.count() > 0:
+      elo_queryset = self.logcustomfieldvalue_set.filter(custom_field=elo_field_queryset[0])
+      if elo_queryset.count() == 1:
+        return int(elo_queryset[0].get_value())
+    
+    return 0
 
   class Meta:
     ordering = ['date']

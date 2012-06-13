@@ -41,44 +41,26 @@ class LogItemForm(ModelForm):
 
     if self.instance:
       for field in self.instance.log.logcustomfield_set.all():
-
-        # using exceptions for program flow, yikes
-        try:
-          # works on editing
-          value = self.instance.logcustomfieldvalue_set.get(custom_field=field)
+        
+        if self.instance.id:
+          value = self.instance.logcustomfieldvalue_set.get_or_create(log_item=self.instance, custom_field=field)[0]
           self.fields[field.name] = field.get_form_field(required=True, initial=value.get_value())
           self.custom_fields[field.name] = field
-        except ObjectDoesNotExist:
-          # works on adding a new item
+        else:
           self.fields[field.name] = field.get_form_field(required=True)
           self.custom_fields[field.name] = field
-
-  def clean_elo(self):
-    data = self.cleaned_data['elo']
-    if data > 5000 or data < 0:
-      raise ValidationError("Please enter a reasonable Elo value")
-    return data
 
   def save(self, force_insert=False, force_update=False, commit=True):
     o = super(LogItemForm, self).save(commit=False)
     
-    is_new = self.instance.id == None
 
     if commit:
       o.save()
     
     for field in self.custom_fields:
       # insert
-      if is_new:
-        value = LogCustomFieldValue(custom_field=self.custom_fields[field], log_item=self.instance)
-      else:
-        try:
-          value = self.instance.logcustomfieldvalue_set.get(custom_field=self.custom_fields[field])
-        except:
-          print("Could not find LogCustomFieldValue for field '%s'" % self.custom_fields[field])
-          return False
+      value = self.instance.logcustomfieldvalue_set.get_or_create(log_item=self.instance, custom_field=self.custom_fields[field])[0]
         
-      print("Saving value '%s' for field '%s'" % (self.cleaned_data[field], field))
       value.set_value(self.cleaned_data[field])
       value.save()
 
@@ -101,6 +83,11 @@ class CommentForm(ModelForm):
   class Meta:
     model = Comment
     fields = ('text',)
+
+class CustomFieldForm(ModelForm):
+  class Meta:
+    model = LogCustomField
+    fields = ('name', 'type',)
 
 class ResendActivationForm(Form):
   email = EmailField(required=True)

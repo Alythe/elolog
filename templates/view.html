@@ -93,6 +93,10 @@
             <i class="icon-edit icon-white"></i>
             Edit log
           </a>
+          <a class="btn btn-warning" href="{% url log.views.view_fields log.id %}">
+            <i class="icon-list-alt icon-white"></i>
+            Edit fields
+          </a>
           {% endif %}
           <a class="btn" href="graph">
             <i class="icon-list-alt"></i>
