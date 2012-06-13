@@ -479,27 +479,44 @@ def global_stats(request):
   if not request.user.is_authenticated() or not request.user.is_staff:
     return HttpResponseRedirect(reverse('log.views.index'))
 
-  stats = StatisticEntry.objects.all() 
+  stats = StatisticEntry.objects.all().reverse() 
   
   data_games = []
   data_users = []
   data_wl_ratio = []
   data_users_online = []
   users_online_hourly = 24*[0]
+  data_active_users = []
 
   tmp_count = 0
+
+  # dirty hacks because of empty records
+  start_users = False
+  start_users_active = False
+
   for entry in stats:
     timestamp = int(time.mktime(entry.date.timetuple())*1000)
     data_games.append("[%d, %d]" % (timestamp, entry.game_count))
     data_users.append("[%d, %d]" % (timestamp, entry.user_count))
     data_wl_ratio.append("[%d, %f]" % (timestamp, entry.wl_ratio))
-    data_users_online.append("[%d, %d]" % (timestamp, entry.users_online))
+    if (entry.users_online > 0):
+      start_users = True
+
+    if start_users:
+      data_users_online.append("[%d, %d]" % (timestamp, entry.users_online))
+
+    if (entry.active_users > 0):
+      start_users_active = True
+
+    if start_users_active:
+      data_active_users.append("[%d, %d]" % (timestamp, entry.active_users))
+
     users_online_hourly[entry.date.hour] += entry.users_online
     if entry.users_online > 0:
       tmp_count += 1
   
   data_users_online_hourly = 24*[""]
-  for i in range(0, 23):
+  for i in range(0, 24):
     data_users_online_hourly[i] = "[%d, %f]" % (i, float(users_online_hourly[i]) / float(tmp_count))
 
   return render_to_response('global_stats.html', RequestContext(request, {
@@ -508,4 +525,5 @@ def global_stats(request):
     'data_wl_ratio': ','.join(data_wl_ratio),
     'data_users_online': ','.join(data_users_online),
     'data_users_online_hourly': ','.join(data_users_online_hourly),
+    'data_active_users': ','.join(data_active_users),
      }))

@@ -227,6 +227,7 @@ class StatisticEntry(models.Model):
   game_leave_count = models.IntegerField()
   wl_ratio = models.FloatField()
   users_online = models.IntegerField(default=0)
+  active_users = models.IntegerField(default=0)
 
   class Meta:
     ordering = ['-date']

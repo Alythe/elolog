@@ -24,7 +24,10 @@
   
   <h2>Users online</h2>
   <div id="graph_users_online" class="global_graph"></div>
-  
+
+  <h2>Users active</h2>
+  <div id="graph_active_users" class="global_graph"></div>
+
   <h2>Users online - Time of day</h2>
   <div id="graph_users_online_hourly" class="global_graph"></div>
 
@@ -47,7 +50,8 @@
       $.plot($("#graph_users"), [[{{ data_users }}]], {points: { show: false }, lines: { show: true }, xaxis: { tickFormatter: elolog_date_formatter }});
       $.plot($("#graph_wl_ratio"), [[{{ data_wl_ratio }}]], {points: { show: false }, lines: { show: true }, xaxis: { tickFormatter: elolog_date_formatter }});
       $.plot($("#graph_users_online"), [[{{ data_users_online }}]], {points: { show: false }, lines: { show: true }, xaxis: { tickFormatter: elolog_date_formatter }});
-      $.plot($("#graph_users_online_hourly"), [[{{ data_users_online_hourly }}]], {points: { show: false }, lines: { show: false }, bars: { show: true }, xaxis: { ticks: 24, tickDecimals: 0}});
+      $.plot($("#graph_active_users"), [[{{ data_active_users }}]], {points: { show: false }, lines: { show: true }, xaxis: { tickFormatter: elolog_date_formatter }});
+      $.plot($("#graph_users_online_hourly"), [[{{ data_users_online_hourly }}]], {points: { show: false }, lines: { show: false }, bars: { show: true, align: "center", barWidth: 0.5 }, xaxis: { ticks: 24, tickDecimals: 0}});
     });
   </script>
 
