@@ -36,6 +36,8 @@ urlpatterns = patterns('',
     url(r'^logs/(?P<log_id>\d+)/fields/new/$', 'log.views.edit_field'),
     url(r'^logs/(?P<log_id>\d+)/fields/edit/(?P<field_id>\d+)/$', 'log.views.edit_field'),
     url(r'^logs/(?P<log_id>\d+)/fields/delete/(?P<field_id>\d+)/$', 'log.views.delete_field'),
+    url(r'^logs/(?P<log_id>\d+)/fields/up/(?P<field_id>\d+)/$', 'log.views.order_field_up'),
+    url(r'^logs/(?P<log_id>\d+)/fields/down/(?P<field_id>\d+)/$', 'log.views.order_field_down'),
     
     url(r'^new/$', 'log.views.edit_log'),
     # Uncomment the admin/doc line below to enable admin documentation:

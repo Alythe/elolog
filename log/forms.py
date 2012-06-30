@@ -87,7 +87,7 @@ class CommentForm(ModelForm):
 class CustomFieldForm(ModelForm):
   class Meta:
     model = LogCustomField
-    fields = ('name', 'type',)
+    fields = ('name', 'type', 'display_on_overview',)
 
 class ResendActivationForm(Form):
   email = EmailField(required=True)

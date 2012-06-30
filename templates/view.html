@@ -116,7 +116,8 @@
           </a>
           {% endif %}
         </div>
-        
+
+        {% if log_item_list %}
         <table class="table">
         <thead>
           <tr>
@@ -183,4 +184,5 @@
       });
       
       </script>
+      {% endif %}
 {% endblock %}

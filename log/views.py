@@ -4,6 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from log.models import Log, LogItem, News, Comment, OUTCOME, UserProfile, StatisticEntry, LogCustomField
 from log.forms import LogForm, LogItemForm, CommentForm, ResendActivationForm, CustomFieldForm
 from log.custom_fields.types import FieldTypes
+from django.core.exceptions import ObjectDoesNotExist
 from django.template import Context, loader, RequestContext
 from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.auth import logout, authenticate, login
@@ -104,24 +105,26 @@ def view(request, log_id, public=False):
   # and write everything back. That's O(n^2) and pretty fucked up
   # but it works for now(tm)
 
-  field_list = log.logcustomfield_set.all()
+  field_list = log.logcustomfield_set.filter(display_on_overview=True)
   has_elo_field = field_list.filter(type=FieldTypes.ELO).count() > 0
 
   log_item_list = log.logitem_set.all()
+  log_item_list_r = []
 
-  start_elo = log.initial_elo
-  elo_gain = []
-  for item in log_item_list:
-    elo_gain.append(item.get_elo() - start_elo)
-    start_elo = item.get_elo()
+  if has_elo_field:
+    start_elo = log.initial_elo
+    elo_gain = []
+    for item in log_item_list:
+      elo_gain.append(item.get_elo() - start_elo)
+      start_elo = item.get_elo()
 
-  index = 0
-  log_item_list_r = log_item_list.reverse()
-  size = log_item_list_r.count()
-  for item in log_item_list_r:
-    item.nr = size - index
-    item.elo_gain = elo_gain[size - 1 - index]
-    index += 1
+    index = 0
+    log_item_list_r = log_item_list.reverse()
+    size = log_item_list_r.count()
+    for item in log_item_list_r:
+      item.nr = size - index
+      item.elo_gain = elo_gain[size - 1 - index]
+      index += 1
 
   paginator = Paginator(log_item_list_r, 25)
   page = request.GET.get('p')
@@ -210,10 +213,23 @@ def export_log(request, log_id):
   response['Content-Disposition'] = 'attachment; filename=export_%s.csv' % name
 
   writer = csv.writer(response)
-  writer.writerow(['Champion', 'Elo after', 'Outcome', 'Remarks'])
+  field_list = log.logcustomfield_set.all()
+  head_row = [f.name for f in field_list]
+  head_row.append("Outcome")
+
+  writer.writerow(head_row)
 
   for item in log.logitem_set.all():
-    writer.writerow([item.champion.name, item.elo, item.get_outcome_display(), item.text])
+    row = []
+    for field in field_list:
+      field_value = item.logcustomfieldvalue_set.filter(custom_field=field)
+
+      if field_value.count() == 0:
+        row.append("")
+      else:
+        row.append(field_value[0].get_value())
+    row.append(item.get_outcome_display())
+    writer.writerow(row)
 
   return response
 
@@ -336,8 +352,14 @@ def view_fields(request, log_id):
     return HttpResponseRedirect(reverse('log.views.index'))
 
   field_list = log.logcustomfield_set.all()
+  try:
+    last_field = log.logcustomfield_set.latest()
+  except ObjectDoesNotExist:
+    last_field = None
 
-  return render_to_response('view_fields.html', RequestContext(request, {'log': log, 'field_list': field_list}))
+  add_new_allowed = field_list.count() < settings.EG_MAX_CUSTOM_FIELDS
+
+  return render_to_response('view_fields.html', RequestContext(request, {'log': log, 'field_list': field_list, 'add_new_allowed': add_new_allowed, 'last_field': last_field }))
 
 def edit_field(request, log_id, field_id=None):
   if not request.user.is_authenticated():
@@ -351,7 +373,14 @@ def edit_field(request, log_id, field_id=None):
   if field_id:
     field = get_object_or_404(LogCustomField, pk=field_id)
   else:
+    if log.logcustomfield_set.count() >= settings.EG_MAX_CUSTOM_FIELDS:
+      return HttpResponseRedirect(reverse('log.views.view_fields', args=[log_id]))
+
     field = LogCustomField(log=log)
+    try:
+      field.order = log.logcustomfield_set.latest().order + 1
+    except ObjectDoesNotExist:
+      field.order = 0
 
   if request.method == 'POST':
     form = CustomFieldForm(request.POST, instance=field)
@@ -382,7 +411,67 @@ def delete_field(request, log_id, field_id):
 
   field.delete()
 
-  return HttpResponseRedirect(reverse('log.views.view', args=[log_id]))
+  return HttpResponseRedirect(reverse('log.views.view_fields', args=[log_id]))
+
+def order_field_up(request, log_id, field_id):
+  if not request.user.is_authenticated():
+    return HttpResponseRedirect(reverse('log.views.index'))
+
+  log = get_object_or_404(Log, pk=log_id)
+  
+  if not request.user.id == log.user.id:
+    return HttpResponseRedirect(reverse('log.views.index'))
+
+  try:
+    field = log.logcustomfield_set.get(id=field_id)
+  except ObjectDoesNotExist:
+    return HttpResponseRedirect(reverse('log.views.view_fields', args=[log_id]))
+
+  if field.order == 0:
+    return HttpResponseRedirect(reverse('log.views.view_fields', args=[log_id]))
+
+  try:
+    field_swap = log.logcustomfield_set.get(order=field.order-1)
+  except ObjectDoesNotExist:
+    return HttpResponseRedirect(reverse('log.views.view_fields', args=[log_id]))
+
+  new_order = field_swap.order
+  field_swap.order = field.order
+  field.order = new_order
+  field.save()
+  field_swap.save()
+
+  return HttpResponseRedirect(reverse('log.views.view_fields', args=[log_id]))
+
+def order_field_down(request, log_id, field_id):
+  if not request.user.is_authenticated():
+    return HttpResponseRedirect(reverse('log.views.index'))
+
+  log = get_object_or_404(Log, pk=log_id)
+  
+  if not request.user.id == log.user.id:
+    return HttpResponseRedirect(reverse('log.views.index'))
+
+  try:
+    field = log.logcustomfield_set.get(id=field_id)
+  except ObjectDoesNotExist:
+    return HttpResponseRedirect(reverse('log.views.view_fields', args=[log_id]))
+
+  if field.order == log.logcustomfield_set.latest().order:
+    return HttpResponseRedirect(reverse('log.views.view_fields', args=[log_id]))
+
+  try:
+    field_swap = log.logcustomfield_set.get(order=field.order+1)
+  except ObjectDoesNotExist:
+    return HttpResponseRedirect(reverse('log.views.view_fields', args=[log_id]))
+
+  new_order = field_swap.order
+  field_swap.order = field.order
+  field.order = new_order
+  field.save()
+  field_swap.save()
+
+  return HttpResponseRedirect(reverse('log.views.view_fields', args=[log_id]))
 
 ### ACCOUNT Management
 def resend_activation(request):

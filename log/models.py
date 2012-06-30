@@ -167,7 +167,13 @@ class LogCustomField(models.Model):
   log = models.ForeignKey(Log)
   type = models.IntegerField(choices=FIELD_TYPE_CHOICES)
   name = models.CharField(max_length=255, default="")
+  display_on_overview = models.BooleanField(default=True)
+  order = models.IntegerField(default=0)
   
+  class Meta:
+    ordering = ['order']
+    get_latest_by = 'order'
+
   def get_form_field(self, *args, **kwargs):
     from custom_fields.types import FIELD_TYPES
     return FIELD_TYPES[self.type](*args, **kwargs)

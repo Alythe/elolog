@@ -13,9 +13,19 @@ class Migration(SchemaMigration):
                       self.gf('django.db.models.fields.IntegerField')(default=0),
                       keep_default=False)
 
+        # Adding field 'LogCustomField.display_on_overview'
+        db.add_column('log_logcustomfield', 'display_on_overview',
+                      self.gf('django.db.models.fields.BooleanField')(default=True),
+                      keep_default=False)
+
+
     def backwards(self, orm):
         # Deleting field 'StatisticEntry.active_users'
         db.delete_column('log_statisticentry', 'active_users')
+
+        # Deleting field 'LogCustomField.display_on_overview'
+        db.delete_column('log_logcustomfield', 'display_on_overview')
+
 
     models = {
         'auth.group': {
@@ -88,15 +98,27 @@ class Migration(SchemaMigration):
             'summoner_name': ('django.db.models.fields.CharField', [], {'max_length': '48'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"})
         },
-        'log.logitem': {
-            'Meta': {'ordering': "['date']", 'object_name': 'LogItem'},
-            'champion': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['log.Champion']"}),
-            'date': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'elo': ('django.db.models.fields.IntegerField', [], {}),
+        'log.logcustomfield': {
+            'Meta': {'object_name': 'LogCustomField'},
+            'display_on_overview': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'log': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['log.Log']"}),
-            'outcome': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
-            'text': ('django.db.models.fields.TextField', [], {})
+            'name': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '255'}),
+            'type': ('django.db.models.fields.IntegerField', [], {})
+        },
+        'log.logcustomfieldvalue': {
+            'Meta': {'object_name': 'LogCustomFieldValue'},
+            '_value': ('django.db.models.fields.TextField', [], {'db_column': "'value'", 'blank': 'True'}),
+            'custom_field': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['log.LogCustomField']"}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'log_item': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['log.LogItem']"})
+        },
+        'log.logitem': {
+            'Meta': {'ordering': "['date']", 'object_name': 'LogItem'},
+            'date': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'log': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['log.Log']"}),
+            'outcome': ('django.db.models.fields.IntegerField', [], {'default': '0'})
         },
         'log.news': {
             'Meta': {'ordering': "['-date']", 'object_name': 'News'},

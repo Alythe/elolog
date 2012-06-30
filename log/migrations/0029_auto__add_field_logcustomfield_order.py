@@ -1,49 +1,23 @@
 # -*- coding: utf-8 -*-
 import datetime
 from south.db import db
-from south.v2 import DataMigration
+from south.v2 import SchemaMigration
 from django.db import models
 
-from log.custom_fields.types import FieldTypes
 
-class Migration(DataMigration):
+class Migration(SchemaMigration):
 
     def forwards(self, orm):
-      for log in orm.Log.objects.all():
-        orm['log.LogCustomField'].objects.create(log=log,
-                                          type=FieldTypes.ELO,
-                                          name="Elo",
-                                          order=0)
-
-        orm['log.LogCustomField'].objects.create(log=log,
-                                          type=FieldTypes.TEXT,
-                                          name="Text",
-                                          order=2)
-
-        orm['log.LogCustomField'].objects.create(log=log,
-                                          type=FieldTypes.CHAMPION,
-                                          name="Champion",
-                                          order=1)
-
-        for item in log.logitem_set.all():
-          log_custom_field = log.logcustomfield_set.get(type=FieldTypes.ELO)
-          orm['log.LogCustomFieldValue'].objects.create(custom_field=log_custom_field,
-                                                log_item=item,
-                                                _value=str(item.elo))
-
-          log_custom_field = log.logcustomfield_set.get(type=FieldTypes.TEXT)
-          orm['log.LogCustomFieldValue'].objects.create(custom_field=log_custom_field,
-                                                log_item=item,
-                                                _value=item.text)
-
-          log_custom_field = log.logcustomfield_set.get(type=FieldTypes.CHAMPION)
-          orm['log.LogCustomFieldValue'].objects.create(custom_field=log_custom_field,
-                                                log_item=item,
-                                                _value=str(item.champion.id))
+        # Adding field 'LogCustomField.order'
+        db.add_column('log_logcustomfield', 'order',
+                      self.gf('django.db.models.fields.IntegerField')(default=0),
+                      keep_default=False)
 
 
     def backwards(self, orm):
-        "Write your backwards methods here."
+        # Deleting field 'LogCustomField.order'
+        db.delete_column('log_logcustomfield', 'order')
+
 
     models = {
         'auth.group': {
@@ -117,10 +91,12 @@ class Migration(DataMigration):
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"})
         },
         'log.logcustomfield': {
-            'Meta': {'object_name': 'LogCustomField'},
+            'Meta': {'ordering': "['order']", 'object_name': 'LogCustomField'},
+            'display_on_overview': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'log': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['log.Log']"}),
             'name': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '255'}),
+            'order': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
             'type': ('django.db.models.fields.IntegerField', [], {})
         },
         'log.logcustomfieldvalue': {
@@ -132,13 +108,10 @@ class Migration(DataMigration):
         },
         'log.logitem': {
             'Meta': {'ordering': "['date']", 'object_name': 'LogItem'},
-            'champion': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['log.Champion']"}),
             'date': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'elo': ('django.db.models.fields.IntegerField', [], {}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'log': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['log.Log']"}),
-            'outcome': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
-            'text': ('django.db.models.fields.TextField', [], {})
+            'outcome': ('django.db.models.fields.IntegerField', [], {'default': '0'})
         },
         'log.news': {
             'Meta': {'ordering': "['-date']", 'object_name': 'News'},
@@ -151,6 +124,7 @@ class Migration(DataMigration):
         },
         'log.statisticentry': {
             'Meta': {'ordering': "['-date']", 'object_name': 'StatisticEntry'},
+            'active_users': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
             'date': ('django.db.models.fields.DateTimeField', [], {}),
             'game_count': ('django.db.models.fields.IntegerField', [], {}),
             'game_leave_count': ('django.db.models.fields.IntegerField', [], {}),
@@ -171,4 +145,3 @@ class Migration(DataMigration):
     }
 
     complete_apps = ['log']
-    symmetrical = True
