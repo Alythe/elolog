@@ -6,6 +6,9 @@ class NumberField(IntegerField, CustomField):
   def __init__(self, *args, **kwargs):
     super(NumberField, self).__init__(*args, **kwargs)
 
+  def render(self, value):
+    return "%s" % (value,)
+
 # rendering of this is done in views.py
 class EloField(NumberField):
   def __init__(self, *args, **kwargs):

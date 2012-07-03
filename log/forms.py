@@ -1,9 +1,53 @@
-from django.forms import ModelForm, CharField, Textarea, Form, EmailField, ValidationError
+from django.forms import ModelForm, CharField, Textarea, Form, EmailField, ValidationError, ChoiceField, Select
 from log.models import Log, LogItem, Comment, LogCustomFieldValue, LogCustomField
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
+from django.shortcuts import render_to_response, get_object_or_404
+
+from log.custom_fields import presets
 
 class LogForm(ModelForm):
+  def __init__(self, *args, **kwargs):
+    super(LogForm, self).__init__(*args, **kwargs)
+    self.presets = presets.get_preset_data()
+    
+    preset_list = ()
+    for name in self.presets:
+      preset_list += ((name, name),)
+
+    logs = self.instance.user.log_set.all()
+    log_list = ()
+    for log in logs:
+      log_list += ((str(log.id), log.summoner_name),)
+
+    choices = (
+        ('Presets', (
+          preset_list
+        )),
+        ('Copy fields from ...', (
+          log_list
+        )),
+      )
+
+    self.fields_preset_field = ChoiceField(required=True, choices=choices)
+    self.fields["preset"] = self.fields_preset_field
+
+  def save(self, force_insert=False, force_update=False, commit=True):
+    o = super(LogForm, self).save(commit=False)
+
+    if commit:
+      o.save()
+
+    if self.cleaned_data["preset"] in self.presets:
+      preset = self.presets[self.cleaned_data["preset"]]
+      presets.initialize_preset(self.instance, preset)
+    else:
+      log_id = long(self.cleaned_data["preset"])
+      log = get_object_or_404(Log, pk=log_id)
+
+      for field in log.logcustomfield_set.all():
+        new_field = LogCustomField(log=self.instance, type=field.type, name=field.name, order=field.order)
+        new_field.save()
 
   def clean_initial_elo(self):
     data = self.cleaned_data['initial_elo']
@@ -52,11 +96,10 @@ class LogItemForm(ModelForm):
 
   def save(self, force_insert=False, force_update=False, commit=True):
     o = super(LogItemForm, self).save(commit=False)
-    
 
     if commit:
       o.save()
-    
+ 
     for field in self.custom_fields:
       # insert
       value = self.instance.logcustomfieldvalue_set.get_or_create(log_item=self.instance, custom_field=self.custom_fields[field])[0]

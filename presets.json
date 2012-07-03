@@ -1,0 +1,39 @@
+{
+
+
+  "Ranked Games":
+  {
+    "Elo":
+    {
+      "type": "Elo",
+      "order": "2"
+    },
+    "Champion":
+    {
+      "type": "Champion",
+      "order": "0"
+    },
+    "Remarks":
+    {
+      "type": "Text",
+      "order": "1"
+    }
+  },
+
+  "Normal Games":
+  {
+    "Champion":
+    {
+      "type": "Champion",
+      "order": "0"
+    },
+    "Remarks":
+    {
+      "type": "Text",
+      "order": "1"
+    }
+  },
+  "Empty Log":
+  {
+  }
+}

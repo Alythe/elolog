@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.contrib.sites.models import Site
 from django.core.validators import MaxLengthValidator
-
+import custom_fields.types
 
 import hashlib
 import unicodedata
@@ -108,11 +108,10 @@ class Log(models.Model):
       return ""
 
   def current_elo(self):
-    from custom_fields.types import FieldTypes
     if self.logitem_set.count() == 0:
       return self.initial_elo
     else:
-
+      from custom_fields.types import FieldTypes
       elo_field_queryset = self.logcustomfield_set.filter(type=FieldTypes.ELO)
       
       # log has an elo field

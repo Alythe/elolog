@@ -118,13 +118,14 @@ def view(request, log_id, public=False):
       elo_gain.append(item.get_elo() - start_elo)
       start_elo = item.get_elo()
 
-    index = 0
-    log_item_list_r = log_item_list.reverse()
-    size = log_item_list_r.count()
-    for item in log_item_list_r:
-      item.nr = size - index
+  index = 0
+  log_item_list_r = log_item_list.reverse()
+  size = log_item_list_r.count()
+  for item in log_item_list_r:
+    item.nr = size - index
+    if has_elo_field:
       item.elo_gain = elo_gain[size - 1 - index]
-      index += 1
+    index += 1
 
   paginator = Paginator(log_item_list_r, 25)
   page = request.GET.get('p')
@@ -177,22 +178,28 @@ def graph_log(request, log_id, public=False):
     if not log.public:
       return HttpResponseRedirect(reverse('log.views.index'))
 
-  log_item_list = log.logitem_set.all()
-  log_empty = len(log_item_list) == 0
+  has_elo_field = log.logcustomfield_set.filter(type=FieldTypes.ELO).count() > 0
 
-  if not log_empty:
-    data = "[ [0, %d], " % log.initial_elo
+  data = ""
+  log_empty = False
+  if has_elo_field:
 
-    index = 1
-    for item in log.logitem_set.all():
-      data += "[%d, %d]," % (index, item.elo)
-      index += 1
+    log_item_list = log.logitem_set.all()
+    log_empty = len(log_item_list) == 0
 
-    data += "]"
-  else:
-    data = ""
+    if not log_empty:
+      data = "[ [0, %d], " % log.initial_elo
 
-  return render_to_response('graph.html', RequestContext(request, {'log': log, 'js_data': data, 'log_empty': log_empty, 'log_id': log_id, 'is_public': public}))
+      index = 1
+      for item in log.logitem_set.all():
+        data += "[%d, %d]," % (index, item.get_elo())
+        index += 1
+
+      data += "]"
+    else:
+      data = ""
+
+  return render_to_response('graph.html', RequestContext(request, {'log': log, 'js_data': data, 'log_empty': log_empty, 'log_id': log_id, 'is_public': public, 'has_graph': has_elo_field}))
 
 def export_log(request, log_id):
   if not request.user.is_authenticated():
