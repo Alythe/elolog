@@ -72,6 +72,7 @@
             <th>Elo</th>
             <th>Games</th>
             <th>Ratio</th>
+            <th>Last update</th>
           </tr>
         </thead>
         <tbody>
@@ -87,6 +88,7 @@
             <td>{{ log.current_elo }}</td>
             <td>{{ log.total_games }} ({{ log.games_won }}/{{ log.games_lost }}/{{log.games_left }})</td>
             <td>{{ log.win_loss_ratio }}</td>
+            <td>{{ log.last_update }}</td>
           </tr>
           {% endfor %}
         </tbody>

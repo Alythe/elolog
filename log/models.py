@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.contrib.sites.models import Site
 from django.core.validators import MaxLengthValidator
+from django.core.exceptions import ObjectDoesNotExist
 import custom_fields.types
 
 import hashlib
@@ -73,6 +74,17 @@ class Log(models.Model):
   public = models.BooleanField(default=False)
   public_hash = models.CharField(max_length = 10, default = "", blank=True)
   show_on_public_list = models.BooleanField(default=False)
+  last_update = models.DateTimeField('date updated', default=datetime.datetime(1970,1,1), blank=True)
+
+  class Meta:
+    ordering = ['-last_update']
+
+  def update_last_update(self):
+    try:
+      self.last_update = self.logitem_set.latest().date
+      self.save()
+    except ObjectDoesNotExist:
+      pass
 
   def total_games(self):
     return self.games_won() + self.games_lost() + self.games_left()
@@ -136,6 +148,14 @@ class LogItem(models.Model):
 
   def __unicode__(self):
     return "Entry #%d, Log %s" % (self.id, self.log.summoner_name)
+
+  def save(self, **kwargs):
+    super(LogItem, self).save(**kwargs)
+    self.log.update_last_update()
+
+  def delete(self):
+    super(LogItem, self).delete()
+    self.log.update_last_update()
 
   def is_win(self):
     return self.outcome==OUTCOME.WIN

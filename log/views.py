@@ -65,7 +65,7 @@ def logs(request, public=False, page=0):
   if not public:
     log_list_all = Log.objects.filter(user__id__exact=request.user.id)
   else:
-    log_list_all = Log.objects.filter(public__exact=True, show_on_public_list__exact=True).order_by('summoner_name')
+    log_list_all = Log.objects.filter(public__exact=True, show_on_public_list__exact=True)#.order_by('-last_update')
 
   paginator = Paginator(log_list_all, 25)
   page = request.GET.get('p')

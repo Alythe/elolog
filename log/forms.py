@@ -15,6 +15,7 @@ class LogForm(ModelForm):
     for name in self.presets:
       preset_list += ((name, name),)
 
+
     logs = self.instance.user.log_set.all()
     log_list = ()
     for log in logs:
@@ -28,9 +29,10 @@ class LogForm(ModelForm):
           log_list
         )),
       )
-
-    self.fields_preset_field = ChoiceField(required=True, choices=choices)
-    self.fields["preset"] = self.fields_preset_field
+    
+    if not self.instance.id:
+      self.fields_preset_field = ChoiceField(required=True, choices=choices)
+      self.fields["preset"] = self.fields_preset_field
 
   def save(self, force_insert=False, force_update=False, commit=True):
     o = super(LogForm, self).save(commit=False)
@@ -38,16 +40,17 @@ class LogForm(ModelForm):
     if commit:
       o.save()
 
-    if self.cleaned_data["preset"] in self.presets:
-      preset = self.presets[self.cleaned_data["preset"]]
-      presets.initialize_preset(self.instance, preset)
-    else:
-      log_id = long(self.cleaned_data["preset"])
-      log = get_object_or_404(Log, pk=log_id)
+    if not self.instance.id:
+      if self.cleaned_data["preset"] in self.presets:
+        preset = self.presets[self.cleaned_data["preset"]]
+        presets.initialize_preset(self.instance, preset)
+      else:
+        log_id = long(self.cleaned_data["preset"])
+        log = get_object_or_404(Log, pk=log_id)
 
-      for field in log.logcustomfield_set.all():
-        new_field = LogCustomField(log=self.instance, type=field.type, name=field.name, order=field.order)
-        new_field.save()
+        for field in log.logcustomfield_set.all():
+          new_field = LogCustomField(log=self.instance, type=field.type, name=field.name, order=field.order)
+          new_field.save()
 
   def clean_initial_elo(self):
     data = self.cleaned_data['initial_elo']
