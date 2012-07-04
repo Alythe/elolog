@@ -36,7 +36,7 @@ INSERT INTO `log_champion` (`id`, `name`, `image`) VALUES
 (35, 'Katarina', 'Katarina.jpg'),
 (36, 'Kayle', 'Kayle.jpg'),
 (37, 'Kennen', 'Kennen.jpg'),
-(38, 'Kog''Maw', 'KogMaw.jpg'),
+(38, 'Kog\'Maw', 'KogMaw.jpg'),
 (39, 'LeBlanc', 'LeBlanc.jpg'),
 (40, 'Lee Sin', 'LeeSin.jpg'),
 (41, 'Leona', 'Leona.jpg'),

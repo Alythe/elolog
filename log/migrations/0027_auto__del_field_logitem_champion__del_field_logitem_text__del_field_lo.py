@@ -101,10 +101,12 @@ class Migration(SchemaMigration):
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"})
         },
         'log.logcustomfield': {
-            'Meta': {'object_name': 'LogCustomField'},
+            'Meta': {'ordering': "['order']", 'object_name': 'LogCustomField'},
+            'display_on_overview': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'log': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['log.Log']"}),
             'name': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '255'}),
+            'order': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
             'type': ('django.db.models.fields.IntegerField', [], {})
         },
         'log.logcustomfieldvalue': {
@@ -132,6 +134,7 @@ class Migration(SchemaMigration):
         },
         'log.statisticentry': {
             'Meta': {'ordering': "['-date']", 'object_name': 'StatisticEntry'},
+            'active_users': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
             'date': ('django.db.models.fields.DateTimeField', [], {}),
             'game_count': ('django.db.models.fields.IntegerField', [], {}),
             'game_leave_count': ('django.db.models.fields.IntegerField', [], {}),
