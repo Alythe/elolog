@@ -234,7 +234,7 @@ def export_log(request, log_id):
       if field_value.count() == 0:
         row.append("")
       else:
-        row.append(field_value[0].get_value())
+        row.append(field_value[0].get_custom_field().get_form_field().format_value(field_value[0].get_value()))
     row.append(item.get_outcome_display())
     writer.writerow(row)
 
@@ -319,6 +319,9 @@ def edit_item(request, log_id, item_id=None):
   else:
     form = LogItemForm(instance=item)
 
+  print("Media:")
+  print(form.media)
+
   return render_to_response('edit_item.html', RequestContext(request, {'form': form, 'item': item, 'log': log}))
 
 def edit_log(request, log_id=None):
@@ -391,9 +394,19 @@ def edit_field(request, log_id, field_id=None):
 
   if request.method == 'POST':
     form = CustomFieldForm(request.POST, instance=field)
-    
+    old_type = field.type
+
     if form.is_valid():
       form.save()
+      
+      for item in log.logitem_set.all():
+        for custom_value in item.logcustomfieldvalue_set.filter(custom_field=field):
+          print("Converting '%s' (Type: %d) to '%s' (Type: %d)" % ( custom_value.get_value(),
+            old_type, field.get_form_field().convert_value(custom_value.get_value()), field.type
+            ))
+          custom_value.set_value(field.get_form_field().convert_value(custom_value.get_value()))
+          custom_value.save()
+
 
       # TODO do casting on all field values defined for the log!
       return HttpResponseRedirect(reverse('log.views.view_fields', args=[log_id]))

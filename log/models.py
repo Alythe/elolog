@@ -209,7 +209,7 @@ class LogCustomFieldValue(models.Model):
     self._value = str(value)
 
   def get_value(self):
-    return self._value
+    return self._value or ""
 
   def get_custom_field(self):
     return self.custom_field

@@ -51,3 +51,11 @@
 .backlink {
   margin-bottom: 20px;
 }
+
+.timepicker {
+  width: 20px;
+}
+
+input.datepicker {
+  width: 80px;
+}

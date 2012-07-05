@@ -88,7 +88,7 @@ class LogItemForm(ModelForm):
 
     if self.instance:
       for field in self.instance.log.logcustomfield_set.all():
-        
+       
         if self.instance.id:
           value = self.instance.logcustomfieldvalue_set.get_or_create(log_item=self.instance, custom_field=field)[0]
           self.fields[field.name] = field.get_form_field(required=True, initial=value.get_value())
@@ -133,7 +133,7 @@ class CommentForm(ModelForm):
 class CustomFieldForm(ModelForm):
   class Meta:
     model = LogCustomField
-    fields = ('name', 'type', 'display_on_overview',)
+    fields = ('name', 'type', 'display_on_overview')
 
 class ResendActivationForm(Form):
   email = EmailField(required=True)

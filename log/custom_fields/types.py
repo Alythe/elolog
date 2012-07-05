@@ -1,6 +1,9 @@
-from textfield import TextField, ShortTextField, KDAField
+from textfield import TextField, ShortTextField
+from kdafield import KDAField
 from numberfield import NumberField, EloField
 from championfield import ChampionField, SmallChampionField
+from datefield import DateField
+from urlfield import URLField
 
 FIELD_TYPES = {
   0: NumberField,
@@ -10,6 +13,8 @@ FIELD_TYPES = {
   4: ChampionField,
   5: KDAField,
   6: SmallChampionField,
+  7: URLField,
+  8: DateField,
 }
 
 class FieldTypes:
@@ -20,6 +25,8 @@ class FieldTypes:
   CHAMPION        = 4
   KDA             = 5
   SMALL_CHAMPION  = 6
+  URL             = 7
+  DATE            = 8
 
 FIELD_TYPE_CHOICES = (
   (FieldTypes.NUMBER, 'Number'),
@@ -29,4 +36,6 @@ FIELD_TYPE_CHOICES = (
   (FieldTypes.CHAMPION, 'Champion'),
   (FieldTypes.KDA, 'KDA'),
   (FieldTypes.SMALL_CHAMPION, 'Champion (Small)'),
+  (FieldTypes.URL, 'URL'),
+  (FieldTypes.DATE, 'Date'),
 )
