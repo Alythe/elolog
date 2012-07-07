@@ -1,5 +1,6 @@
 class CustomField:
-  def __init__(self):
+  def __init__(self, user):
+    self.user = user
     pass
 
   def format_value(self, value):

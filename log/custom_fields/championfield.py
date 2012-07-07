@@ -9,7 +9,11 @@ class ChampionField(ModelChoiceField, CustomField):
     super(ChampionField, self).__init__(queryset=log.models.Champion.objects.all(), empty_label=None, *args, **kwargs)
 
   def render(self, data):
-    champ = log.models.Champion.objects.get(pk=int(data))
+    try:
+      champ_id = int(data)
+    except ValueError:
+      champ_id = 1
+    champ = log.models.Champion.objects.get(pk=champ_id)
     
     return "<img src=\"%simg/champions/%s\"></img>" % (settings.STATIC_URL, champ.image)
 

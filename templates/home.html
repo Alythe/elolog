@@ -33,7 +33,7 @@ h2 img {
         <p>New to EloLog? <a href="{% url about %}">Find out</a> what this is about!</p>
         <p>Want to start improving? Click "Sign in" in the top right corner or create an account <a href="{% url registration_register %}"> here</a>.
         {% else %}
-        <p>Welcome back, <strong>{{ user.username }}</strong>! Your last visit was <strong>{{ user.last_login }}</strong></p>
+        <p>Welcome back, <strong>{{ user.username }}</strong>! Your last visit was <strong>{{ last_login_str  }}</strong></p>
         {% endif %}
         <hr/>
         <div class="row">

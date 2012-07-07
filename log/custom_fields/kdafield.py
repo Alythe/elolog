@@ -1,35 +1,15 @@
 from django import forms
-from log.custom_fields.textfield import ShortTextField
+from log.custom_fields.customfield import CustomField
+from log.fields import KDAField
+from log.widgets import KDAWidget
 from django.forms import ValidationError
 
-class KDAField(ShortTextField):
+class KDAField(KDAField, CustomField):
   def __init__(self, *args, **kwargs):
-    super(KDAField, self).__init__(*args, **kwargs)
+    super(KDAField, self).__init__(widget=KDAWidget(attrs={'class': 'kda_field'}), *args, **kwargs)
 
   def clean(self, value):
-    if '/' not in value and '-' not in value and ' ' not in value:
-      raise ValidationError("Please enter your K/D/A in one of the following forms: K/D/A, K-D-A or K D A")
-
-    data = []
-    if '/' in value:
-      data = value.split('/')
-    elif ' ' in value:
-      data = value.split(' ')
-    elif '-' in value:
-      data = value.split('-')
-
-    if len(data) != 3:
-      raise ValidationError("Please specify kills, deaths and assists!")
-
-    for num in data:
-      try:
-        n = int(num)
-        if n < 0:
-          raise ValueError
-      except ValueError:
-        raise ValidationError("Please specify kills, deaths, assists as positive numbers!")
-
-    return '/'.join(data)
+    return self.compress(value)
 
   def convert_value(self, value):
     try:

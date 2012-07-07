@@ -21,6 +21,22 @@ REGION_CHOICES = (
   ('SEA', 'Southeast Asia'),
 )
 
+DATE_TIME_FORMAT = "%d.%m.%Y %H:%M"
+DATE_FORMAT = "%d.%m.%Y"
+TIME_FORMAT = "%H:%M"
+DATEPICKER_FORMAT = "dd.mm.yyyy" # this has to be the same as DATE_FORMAT but with different syntax (fuck js)
+
+
+DATE_FORMAT_CHOICES = (
+  ('%d.%m.%Y', 'dd.mm.yyyy'),
+  ('%m-%d-%Y', 'mm-dd-yyyy'),
+)
+
+TIME_FORMAT_CHOICES = (
+  ('%H:%M', '24 hours'),
+  ('%I:%M %p', '12 hours (am/pm)'),
+)
+
 class OUTCOME:
   WIN = 0
   LOSS = 1
@@ -49,6 +65,8 @@ class Champion(models.Model):
 class UserProfile(models.Model):
   user = models.OneToOneField(User)
   last_activity = models.DateTimeField(default=datetime.datetime.fromtimestamp(0))
+  date_format = models.CharField(max_length=256, choices=DATE_FORMAT_CHOICES, default='%d.%m.%Y')
+  time_format = models.CharField(max_length=256, choices=TIME_FORMAT_CHOICES, default='%H:%M')
 
   def update_activity(self):
     self.last_activity = datetime.datetime.now()
@@ -193,9 +211,9 @@ class LogCustomField(models.Model):
     ordering = ['order']
     get_latest_by = 'order'
 
-  def get_form_field(self, *args, **kwargs):
+  def get_form_field(self, user, *args, **kwargs):
     from custom_fields.types import FIELD_TYPES
-    return FIELD_TYPES[self.type](*args, **kwargs)
+    return FIELD_TYPES[self.type](user, *args, **kwargs)
 
   def __unicode__(self):
     return "#%d '%s' (%s)" % (self.id, self.name, self.get_type_display())

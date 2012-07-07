@@ -58,4 +58,9 @@
 
 input.datepicker {
   width: 80px;
+  cursor: pointer;
+}
+
+input.kda_field {
+  width: 30px;
 }

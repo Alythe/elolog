@@ -13,6 +13,8 @@ urlpatterns = patterns('',
     # Examples:
     url(r'^$', 'log.views.index'),
     
+    url(r'^settings/$', 'log.views.user_settings'),
+
     url(r'^logs/$', 'log.views.logs', name="my_logs"),
     url(r'^public/$', 'log.views.logs', {'public': True}, name="public_logs"),
     

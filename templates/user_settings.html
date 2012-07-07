@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}- Settings{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Settings <small>{{ request.user.username }}</small></h1>
+</div>
+<a href="/accounts/password/change/">Change password</a>
+<hr/>
+
+{% if saved %}
+<div class="alert alert-success">
+Settings saved!
+</div>
+{% endif %}
+
+<form method="post" action="">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <input type="submit" class="btn btn-primary" name="submit" value="Save"/>
+</form>
+{% endblock %}

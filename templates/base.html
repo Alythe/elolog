@@ -34,13 +34,16 @@
 
 
         {% if user.is_authenticated %}
-        <a class="btn btn-warning pull-right" href="/logout">
-          Sign out
-        </a>
-        <div class="nav-collapse pull-right">
-          <ul class="nav">
-            <li><a href="{% url my_logs %}">{{ user.username }}</a></li>
-          </ul> 
+        <div class="btn-group pull-right">
+          <button class="btn btn-warning dropdown-toggle" data-toggle="dropdown">
+            {{ user.username }}
+            <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu">
+            <li><a href="{% url log.views.user_settings %}"><i class="icon-cog"></i> Settings</a></li>
+            <li class="divider"></li>
+            <li><a href="/logout"><i class="icon-off"></i> Logout</a></li>
+          </ul>
         </div>
         {% else %}
         <a class="btn btn-success pull-right" href="{% url auth_login %}">

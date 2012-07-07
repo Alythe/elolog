@@ -3,7 +3,7 @@ import os.path
 from local_settings import DATABASES, EMAIL_BACKEND
 
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
-print(PROJECT_ROOT)
+
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -171,10 +171,5 @@ ACCOUNT_ACTIVATION_DAYS = 2
 EMAIL_HOST = 'localhost'
 DEFAULT_FROM_EMAIL = 'support@elolog.net'
 LOGIN_REDIRECT_URL = '/'
-
-DATE_TIME_FORMAT = "%d.%m.%Y %H:%M"
-DATE_FORMAT = "%d.%m.%Y"
-TIME_FORMAT = "%H:%M"
-DATEPICKER_FORMAT = "dd.mm.yyyy" # this has to be the same as DATE_FORMAT but with different syntax (fuck js)
 
 EG_MAX_CUSTOM_FIELDS = 10

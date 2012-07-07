@@ -1,5 +1,5 @@
 from django.forms import ModelForm, CharField, Textarea, Form, EmailField, ValidationError, ChoiceField, Select
-from log.models import Log, LogItem, Comment, LogCustomFieldValue, LogCustomField
+from log.models import Log, LogItem, Comment, LogCustomFieldValue, LogCustomField, UserProfile
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render_to_response, get_object_or_404
@@ -81,21 +81,20 @@ class LogForm(ModelForm):
     fields = ('summoner_name', 'region', 'initial_elo', 'initial_games_won', 'initial_games_lost', 'initial_games_left', 'show_on_public_list')
 
 class LogItemForm(ModelForm):
-  def __init__(self, *args, **kwargs):
+  def __init__(self, data=None, user=None, *args, **kwargs):
     from log.custom_fields.types import FieldTypes
-    super(LogItemForm, self).__init__(*args, **kwargs)
+    super(LogItemForm, self).__init__(data, *args, **kwargs)
     self.custom_fields = {}
 
     if self.instance:
       for field in self.instance.log.logcustomfield_set.all():
-       
+        value = None
         if self.instance.id:
-          value = self.instance.logcustomfieldvalue_set.get_or_create(log_item=self.instance, custom_field=field)[0]
-          self.fields[field.name] = field.get_form_field(required=True, initial=value.get_value())
-          self.custom_fields[field.name] = field
-        else:
-          self.fields[field.name] = field.get_form_field(required=True)
-          self.custom_fields[field.name] = field
+          value = self.instance.logcustomfieldvalue_set.get_or_create(log_item=self.instance, custom_field=field)[0].get_value()
+        self.fields[field.name] = field.get_form_field(user, required=True, initial=value)
+        
+        self.fields[field.name].label = field.name
+        self.custom_fields[field.name] = field
 
   def save(self, force_insert=False, force_update=False, commit=True):
     o = super(LogItemForm, self).save(commit=False)
@@ -137,3 +136,8 @@ class CustomFieldForm(ModelForm):
 
 class ResendActivationForm(Form):
   email = EmailField(required=True)
+
+class UserSettingsForm(ModelForm):
+  class Meta:
+    model = UserProfile
+    fields = ('date_format', 'time_format')

@@ -19,10 +19,6 @@
           <h1><img src="{{ STATIC_URL }}img/icons/glyphicons_039_notes.png"/>My logs</h1>
           {% endif %}
         </div>
-        {% if not is_public %}
-        <a href="/accounts/password/change/">Change password</a>
-        <hr/>
-        {% endif %}
         {% if not log_list and not is_public %}
         <div class="alert alert-success">
           Start using EloLog now by starting a new log with a click on the button below!
