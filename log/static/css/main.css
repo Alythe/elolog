@@ -47,3 +47,18 @@
   display: inline;
   margin-right: 10px;
 }
+
+ul.imprint {
+  list-style-type: none;
+}
+
+div.imprint {
+  color: #aaaaaa;
+  font-size: 9px;
+  text-align: right;
+}
+
+div.imprint a {
+  color: #aaaaaa;
+  text-decoration: underline;
+}

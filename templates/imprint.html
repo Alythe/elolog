@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %} - Imprint{% endblock %}
+
+{#{% block page_width %}span8 offset2{% endblock %}#}
+
+{% block content %}
+        <div class="page-header">
+          <h1><img src="{{ STATIC_URL }}img/icons/glyphicons_195_circle_info.png"/>Imprint <small>Elolog</small></h1>
+        </div>
+
+        <p>Responsible for this website:</p>
+        <p><strong>Fabian Schlager</strong></p>
+
+        <ul class="imprint">
+          <li>Hans-Resel-Gasse 18/22</li>
+          <li>8020 Graz, Austria</li>
+          <li>Email: support<img src="{{ STATIC_URL }}img/icons/glyphicons_399_e-mail.png" width="15px" style="margin-left: 2px; margin-right: 2px;"></img>elolog.net</li>
+        </ul>
+
+        <p>For more possibilities to reach me see <a href="{% url about %}">About</a>.</p>
+
+{% endblock %}
