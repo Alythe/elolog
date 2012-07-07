@@ -407,8 +407,6 @@ def edit_field(request, log_id, field_id=None):
       
       for item in log.logitem_set.all():
         for custom_value in item.logcustomfieldvalue_set.filter(custom_field=field):
-            old_type, field.get_form_field().convert_value(custom_value.get_value()), field.type
-            ))
           custom_value.set_value(field.get_form_field().convert_value(custom_value.get_value()))
           custom_value.save()
 
