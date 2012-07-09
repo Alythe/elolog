@@ -33,6 +33,7 @@ DATEPICKER_FORMAT = "dd.mm.yyyy" # this has to be the same as DATE_FORMAT but wi
 DATE_FORMAT_CHOICES = (
   ('%d.%m.%Y', 'dd.mm.yyyy'),
   ('%m-%d-%Y', 'mm-dd-yyyy'),
+  ('%m/%d/%Y', 'mm/dd/yyyy'),
 )
 
 TIME_FORMAT_CHOICES = (
