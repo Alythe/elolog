@@ -523,7 +523,11 @@ def resend_activation(request):
 
     if form.is_valid():
       email = form.cleaned_data["email"]
-      user = User.objects.get(email=email, is_active=0)
+      
+      try:
+        user = User.objects.get(email=email, is_active=0)
+      except ObjectDoesNotExist:
+        user = None
 
       if not user:
         form._errors["email"] = ("No account found for this email or already activated!",)
