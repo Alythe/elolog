@@ -37,15 +37,23 @@ class LogForm(ModelForm):
   def save(self, force_insert=False, force_update=False, commit=True):
     o = super(LogForm, self).save(commit=False)
 
+    is_new = not self.instance.id
+
     if commit:
       o.save()
 
-    if not self.instance.id:
-      if self.cleaned_data["preset"] in self.presets:
-        preset = self.presets[self.cleaned_data["preset"]]
+    if is_new:
+      if self.cleaned_data['preset'] in self.presets:
+        preset = self.presets[self.cleaned_data['preset']]
         presets.initialize_preset(self.instance, preset)
       else:
-        log_id = long(self.cleaned_data["preset"])
+        try:
+          log_id = long(self.cleaned_data['preset'])
+        except ValueError:
+          # silently catching this casting exception
+          # as this will only happen when a user fiddles with POST data
+          return
+
         log = get_object_or_404(Log, pk=log_id)
 
         for field in log.logcustomfield_set.all():
