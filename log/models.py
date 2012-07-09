@@ -4,11 +4,13 @@ from django.db.models.signals import post_save
 from django.contrib.sites.models import Site
 from django.core.validators import MaxLengthValidator
 from django.core.exceptions import ObjectDoesNotExist
+from django.conf import settings
 import custom_fields.types
 
 import hashlib
 import unicodedata
 import datetime
+import pytz
 
 # Create your models here.
 
@@ -36,6 +38,13 @@ TIME_FORMAT_CHOICES = (
   ('%H:%M', '24 hours'),
   ('%I:%M %p', '12 hours (am/pm)'),
 )
+
+TIME_ZONE_CHOICES = ()
+
+for tz in pytz.common_timezones:
+  TIME_ZONE_CHOICES += ((tz, tz),)
+
+print TIME_ZONE_CHOICES
 
 class OUTCOME:
   WIN = 0
@@ -67,6 +76,7 @@ class UserProfile(models.Model):
   last_activity = models.DateTimeField(default=datetime.datetime.fromtimestamp(0))
   date_format = models.CharField(max_length=256, choices=DATE_FORMAT_CHOICES, default='%d.%m.%Y')
   time_format = models.CharField(max_length=256, choices=TIME_FORMAT_CHOICES, default='%H:%M')
+  time_zone = models.CharField(max_length=256, choices=TIME_ZONE_CHOICES, default=settings.TIME_ZONE)
 
   def update_activity(self):
     self.last_activity = datetime.datetime.now()

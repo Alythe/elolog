@@ -4,6 +4,8 @@ from log.models import UserProfile, LockSite
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import Context, loader, RequestContext
 from django.core.exceptions import ObjectDoesNotExist
+from django.utils import timezone
+from django.conf import settings
 
 class MaintenanceMiddleware():
   def process_request(self, request):
@@ -11,7 +13,9 @@ class MaintenanceMiddleware():
       try:
         profile = request.user.get_profile()
         profile.update_activity()
+        timezone.activate(profile.time_zone)
       except SiteProfileNotAvailable:
+        timezone.activate(pytz.timezone(settings.TIME_ZONE))
         return None
 
     return None

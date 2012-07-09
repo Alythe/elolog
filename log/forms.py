@@ -148,4 +148,4 @@ class ResendActivationForm(Form):
 class UserSettingsForm(ModelForm):
   class Meta:
     model = UserProfile
-    fields = ('date_format', 'time_format')
+    fields = ('date_format', 'time_format', 'time_zone')
