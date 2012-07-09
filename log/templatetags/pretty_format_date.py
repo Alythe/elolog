@@ -20,4 +20,4 @@ def pretty_format_date( date, user ):
 
     return date.strftime("%s %s" % (date_format, time_format))
   else:
-    return None
+    return 'Never'
