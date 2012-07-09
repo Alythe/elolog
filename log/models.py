@@ -5,6 +5,7 @@ from django.contrib.sites.models import Site
 from django.core.validators import MaxLengthValidator
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
+from django.utils import timezone
 import custom_fields.types
 
 import hashlib
@@ -44,8 +45,6 @@ TIME_ZONE_CHOICES = ()
 for tz in pytz.common_timezones:
   TIME_ZONE_CHOICES += ((tz, tz),)
 
-print TIME_ZONE_CHOICES
-
 class OUTCOME:
   WIN = 0
   LOSS = 1
@@ -73,14 +72,17 @@ class Champion(models.Model):
 
 class UserProfile(models.Model):
   user = models.OneToOneField(User)
-  last_activity = models.DateTimeField(default=datetime.datetime.fromtimestamp(0))
+  last_activity = models.DateTimeField(default=timezone.now())
   date_format = models.CharField(max_length=256, choices=DATE_FORMAT_CHOICES, default='%d.%m.%Y')
   time_format = models.CharField(max_length=256, choices=TIME_FORMAT_CHOICES, default='%H:%M')
   time_zone = models.CharField(max_length=256, choices=TIME_ZONE_CHOICES, default=settings.TIME_ZONE)
 
   def update_activity(self):
-    self.last_activity = datetime.datetime.now()
+    self.last_activity = timezone.now()
     self.save()
+
+  def get_time_zone(self):
+    return pytz.timezone(self.time_zone)
 
   def __unicode__(self):
     return "%s's profile" % self.user
@@ -102,7 +104,7 @@ class Log(models.Model):
   public = models.BooleanField(default=False)
   public_hash = models.CharField(max_length = 10, default = "", blank=True)
   show_on_public_list = models.BooleanField(default=False)
-  last_update = models.DateTimeField('date updated', default=datetime.datetime(1970,1,1), blank=True)
+  last_update = models.DateTimeField('date updated', default=datetime.datetime(1970,1,1, tzinfo=pytz.utc), blank=True)
 
   class Meta:
     ordering = ['-last_update']

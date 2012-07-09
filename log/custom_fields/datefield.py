@@ -5,6 +5,7 @@ from django.forms.fields import MultiValueField, CharField
 from django.utils.html import escape
 from django.core.validators import URLValidator
 from django.conf import settings
+from django.utils import timezone
 from log.widgets import LogSplitDateTimeWidget
 import datetime
 import time
@@ -18,12 +19,12 @@ class DateField(MultiValueField, CustomField):
     self.date_format = self.user.get_profile().date_format
     self.time_format = self.user.get_profile().time_format
 
-    initial_date = datetime.datetime.now()
+    initial_date = timezone.now().astimezone(timezone.get_current_timezone())
     if initial:
       try:
-        initial_date = datetime.datetime.fromtimestamp(float(initial))
+        initial_date = datetime.datetime.fromtimestamp(float(initial), timezone.get_current_timezone())
       except ValueError:
-        initial_date = datetime.datetime.now()
+        initial_date = timezone.now().astimezone(timezone.get_current_timezone())
     
     all_fields = (
         CharField(max_length=10),
@@ -44,17 +45,17 @@ class DateField(MultiValueField, CustomField):
         raise forms.ValidationError("Field is missing data.")
       
       try:
-        obj_date = time.strptime("%s %s:%s" % (data_list[0], data_list[1], data_list[2]), "%s %%H:%%M" % (self.date_format))
+        obj_date = datetime.datetime.strptime("%s %s:%s" % (data_list[0], data_list[1], data_list[2]), "%s %%H:%%M" % (self.date_format)).replace(tzinfo=timezone.get_current_timezone()).astimezone(timezone.utc)
       except ValueError:
         raise forms.ValidationError("Date and/or time is malformed!")
 
-      return time.mktime(obj_date)            
+      return time.mktime(obj_date.timetuple())            
     return None
 
   def clean(self, data):
     return self.compress(data)
 
   def render(self, data):
-    timetuple = datetime.datetime.fromtimestamp(float(data)).timetuple()
+    timetuple = datetime.datetime.fromtimestamp(float(data), timezone.utc).astimezone(timezone.get_current_timezone()).timetuple()
     return "%s %s" % (time.strftime(self.date_format, timetuple),
         time.strftime(self.time_format, timetuple))

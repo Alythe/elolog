@@ -16,6 +16,7 @@ from django.utils.hashcompat import sha_constructor
 from registration.models import RegistrationProfile
 from django.contrib.sites.models import Site
 from django.conf import settings
+from django.utils import timezone
 
 from random import random
 import csv
@@ -41,7 +42,7 @@ def index(request):
   public_logs = Log.objects.filter(public__exact=True)
   public_logs_on_list = Log.objects.filter(public__exact=True, show_on_public_list__exact=True)
 
-  logged_in_threshold = datetime.datetime.now() - datetime.timedelta(minutes=10)
+  logged_in_threshold = timezone.now() - datetime.timedelta(minutes=10)
   logged_in_profiles = UserProfile.objects.filter(last_activity__gte=logged_in_threshold)
 
   c['news_item'] = news
@@ -537,14 +538,14 @@ def resend_activation(request):
         if profile.activation_key_expired():
           salt = sha_constructor(str(random())).hexdigest()[:5]
           profile.activation_key = sha_constructor(salt+user.username).hexdigest()
-          user.date_joined = datetime.datetime.now()
+          user.date_joined = timezone.now()
           user.save()
           profile.save()
         else:
           # as long as the key is not expired, don't let them send a new one
           # this is to avoid abuse
           expiration_date = datetime.timedelta(days=settings.ACCOUNT_ACTIVATION_DAYS)
-          date = user.date_joined + expiration_date - datetime.datetime.now()
+          date = user.date_joined + expiration_date - timezone.now()
           if date > datetime.timedelta(days=1):
             time_to_wait = "two days"
           elif date > datetime.timedelta(hours=8):
@@ -584,7 +585,7 @@ def news_comments(request, news_id):
     if not request.user.is_authenticated() or not news.comments_allowed:
       return HttpResponseRedirect(reverse('log.views.news_comments', args=[news_id]))
 
-    comment = Comment(user=request.user, news=news, date=datetime.datetime.today())
+    comment = Comment(user=request.user, news=news, date=timezone.now())
     form = CommentForm(request.POST, instance=comment)
 
     if form.is_valid():

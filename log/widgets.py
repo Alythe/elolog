@@ -8,6 +8,7 @@ from django.conf import settings
 from time import strftime
 from django.forms.util import flatatt
 from django.utils.safestring import mark_safe
+from django.utils import timezone
 import datetime
 
 class LogSplitDateTimeWidget(MultiWidget):
