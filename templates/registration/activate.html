@@ -2,11 +2,11 @@
 
 {% block title %} - Invalid activation key{% endblock %}
 
-{% block content %}
-<div class="page-header">
-  <h1>Invalid activation key</h1>
-</div>
+{% block headline %}
+<h1>Invalid activation key</h1>
+{% endblock %}
 
+{% block content %}
 <div class="alert alert-error">Invalid activation key, this can have one of the following reasons:
   <ul>
     <li>Your account already is activated. If you can't login, try <a href="{% url django.contrib.auth.views.password_reset %}">resetting your password.</a></li>

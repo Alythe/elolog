@@ -2,10 +2,11 @@
 
 {% block title %}- Resend activation{% endblock %}
 
+{% block headline %}
+<h1>Resend activation mail</h1>
+{% endblock %}
+
 {% block content %}
-<div class="page-header">
-  <h1>Resend activation mail</h1>
-</div>
 <form method="post" action="">
   {% csrf_token %}
   {{ form.as_p }}

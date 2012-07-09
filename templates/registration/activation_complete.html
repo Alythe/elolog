@@ -2,11 +2,11 @@
 
 {% block title %} - Activate{% endblock %}
 
-{% block content %}
-<div class="page-header">
-  <h1>Email activation</h1>
-</div>
+{% block headline %}
+<h1>Email activation</h1>
+{% endblock %}
 
+{% block content %}
 {% if user %}
 <div class="alert alert-success">Account activated! Go ahead and <a href="{% url auth_login %}">log in</a>!</div>
 {% else %}

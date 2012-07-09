@@ -2,10 +2,11 @@
 
 {% block title %} - Sign in{% endblock %}
 
+{% block headline %}
+<h1>Sign in</h1>
+{% endblock %}
+
 {% block content %}
-  <div class="page-header">
-    <h1>Sign in</h1>
-  </div>
   <form action="" method="POST">
     {% csrf_token %}
     {{ form.as_p }}
