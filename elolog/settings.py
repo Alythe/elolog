@@ -4,7 +4,7 @@ from local_settings import DATABASES, EMAIL_BACKEND, STATIC_ROOT, STATIC_URL
 
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
 
-DEBUG = False
+DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
