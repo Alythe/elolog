@@ -23,6 +23,7 @@ import csv
 import unicodedata
 import datetime
 import time
+import re
 
 ### LOG Viewing ###
 def index(request):
@@ -227,7 +228,10 @@ def export_log(request, log_id):
 
   # do this to remove non ascii-printable characters
   name = unicodedata.normalize("NFKD", log.summoner_name).encode('ascii', 'ignore')
-  response['Content-Disposition'] = 'attachment; filename=export_%s.csv' % name
+  name = unicode(re.sub('[^\w\s-]', '', name).strip().lower())
+  name = re.sub('[-\s]+', '-', name)
+
+  response['Content-Disposition'] = 'attachment; filename=ex%d_%s.csv' % (log.id, name)
 
   writer = csv.writer(response)
   field_list = log.logcustomfield_set.all()
