@@ -9,6 +9,7 @@ from django.utils import timezone
 from log.widgets import LogSplitDateTimeWidget
 import datetime
 import time
+import calendar
 
 class DateField(MultiValueField, CustomField):
   widget = LogSplitDateTimeWidget
@@ -22,7 +23,7 @@ class DateField(MultiValueField, CustomField):
     initial_date = timezone.now().astimezone(timezone.get_current_timezone())
     if initial:
       try:
-        initial_date = datetime.datetime.fromtimestamp(float(initial), timezone.get_current_timezone())
+        initial_date = datetime.datetime.fromtimestamp(float(initial), timezone.utc).astimezone(timezone.get_current_timezone())
       except ValueError:
         initial_date = timezone.now().astimezone(timezone.get_current_timezone())
     
@@ -45,17 +46,17 @@ class DateField(MultiValueField, CustomField):
         raise forms.ValidationError("Field is missing data.")
       
       try:
-        obj_date = datetime.datetime.strptime("%s %s:%s" % (data_list[0], data_list[1], data_list[2]), "%s %%H:%%M" % (self.date_format)).replace(tzinfo=timezone.get_current_timezone()).astimezone(timezone.utc)
+        obj_date = timezone.get_current_timezone().localize(datetime.datetime.strptime("%s %s:%s" % (data_list[0], data_list[1], data_list[2]), "%s %%H:%%M" % (self.date_format))).astimezone(timezone.utc)
       except ValueError:
         raise forms.ValidationError("Date and/or time is malformed!")
 
-      return time.mktime(obj_date.timetuple())            
+      return calendar.timegm(obj_date.timetuple())            
     return None
 
   def clean(self, data):
     return self.compress(data)
 
   def render(self, data):
-    timetuple = datetime.datetime.fromtimestamp(float(data), timezone.utc).astimezone(timezone.get_current_timezone()).timetuple()
-    return "%s %s" % (time.strftime(self.date_format, timetuple),
-        time.strftime(self.time_format, timetuple))
+    dt = datetime.datetime.fromtimestamp(float(data), timezone.utc).astimezone(timezone.get_current_timezone())
+    return "%s %s" % (dt.strftime(self.date_format),
+        dt.strftime(self.time_format))

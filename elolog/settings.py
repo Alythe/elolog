@@ -162,3 +162,8 @@ DEFAULT_FROM_EMAIL = 'support@elolog.net'
 LOGIN_REDIRECT_URL = '/'
 
 EG_MAX_CUSTOM_FIELDS = 10
+
+DATE_TIME_FORMAT = "%d.%m.%Y %H:%M"
+DATE_FORMAT = "%d.%m.%Y"
+TIME_FORMAT = "%H:%M"
+DATEPICKER_FORMAT = "dd.mm.yyyy"
