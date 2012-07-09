@@ -5,11 +5,12 @@
   width: 30px;
 }
 {% endblock %}
-{% block content %}
-        <div class="page-header">
-          <h1>{{ log.summoner_name }}</h1>
-        </div>
 
+{% block headline %}
+<h1>{{ log.summoner_name }}</h1>
+{% endblock %}
+
+{% block content %}
         {% if log.id %}
         <a class="btn" href="{% url log.views.view log.id %}">
           <i class="icon-arrow-left"></i>

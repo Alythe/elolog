@@ -1,10 +1,11 @@
 {% extends "base.html" %}
 {% block title %} - View log{% endblock %}
 
+{% block headline %}
+<h1>{{ log.summoner_name }} <small>Overview</small></h1>
+{% endblock %}
+
 {% block content %}
-        <div class="page-header">
-          <h1>{{ log.summoner_name }} <small>Overview</small></h1>
-        </div>
         <ul class="flat-list">
           <li>Current Elo: <strong>{{ log.current_elo }}</strong></li>
           <li>Games played: <strong>{{ log.total_games }} ({{ log.games_won }}/{{ log.games_lost }}/{{log.games_left }})</strong></li>

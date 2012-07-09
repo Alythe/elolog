@@ -20,11 +20,11 @@
 
 {% block page_width %}span8 offset2{% endblock %}
 
-{% block content %}
-        <div class="page-header">
-          <h1>News</h1>
-        </div>
+{% block headline %}
+<h1>News</h1>
+{% endblock %}
 
+{% block content %}
         {% include 'news/news.html' %}
 
         {% if news_item.comments_allowed %}

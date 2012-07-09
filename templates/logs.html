@@ -11,14 +11,15 @@
   }
 {% endblock %}
 
+{% block headline %}
+  {% if is_public %}
+    <h1><img src="{{ STATIC_URL }}img/icons/glyphicons_039_notes.png"/>Public logs</h1>
+  {% else %}
+    <h1><img src="{{ STATIC_URL }}img/icons/glyphicons_039_notes.png"/>My logs</h1>
+  {% endif %}
+{% endblock %}
+
 {% block content %}
-        <div class="page-header">
-          {% if is_public %}
-          <h1><img src="{{ STATIC_URL }}img/icons/glyphicons_039_notes.png"/>Public logs</h1>
-          {% else %}
-          <h1><img src="{{ STATIC_URL }}img/icons/glyphicons_039_notes.png"/>My logs</h1>
-          {% endif %}
-        </div>
         {% if not log_list and not is_public %}
         <div class="alert alert-success">
           Start using EloLog now by starting a new log with a click on the button below!

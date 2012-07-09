@@ -2,10 +2,11 @@
 
 {% block title %}- Settings{% endblock %}
 
+{% block headline %}
+<h1>Settings <small>{{ request.user.username }}</small></h1>
+{% endblock %}
+
 {% block content %}
-<div class="page-header">
-  <h1>Settings <small>{{ request.user.username }}</small></h1>
-</div>
 <a href="/accounts/password/change/">Change password</a>
 <hr/>
 
