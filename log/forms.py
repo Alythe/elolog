@@ -99,7 +99,8 @@ class LogItemForm(ModelForm):
         value = None
         if self.instance.id:
           value = self.instance.logcustomfieldvalue_set.get_or_create(log_item=self.instance, custom_field=field)[0].get_value()
-        self.fields[field.name] = field.get_form_field(user, required=True, initial=value)
+        
+        self.fields[field.name] = field.get_form_field(user, initial=value)
         
         self.fields[field.name].label = field.name
         self.custom_fields[field.name] = field
