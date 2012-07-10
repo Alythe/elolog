@@ -7,10 +7,6 @@ PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__f
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
-ADMINS = (
-    # ('Your Name', 'your_email@example.com'),
-)
-
 MANAGERS = ADMINS
 
 # Local time zone for this installation. Choices can be found here:
