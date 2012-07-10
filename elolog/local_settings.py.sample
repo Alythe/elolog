@@ -1,3 +1,8 @@
+# List of admins
+ADMINS = (
+  #( 'Admin Name', 'admin@elolog.net'),
+)
+
 # Database settings
 DATABASES = {
     'default': {
