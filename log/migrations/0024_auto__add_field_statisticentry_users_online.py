@@ -13,9 +13,17 @@ class Migration(SchemaMigration):
                       self.gf('django.db.models.fields.IntegerField')(default=0),
                       keep_default=False)
 
+        # Adding field 'StatisticEntry.active_users'
+        db.add_column('log_statisticentry', 'active_users',
+                      self.gf('django.db.models.fields.IntegerField')(default=0),
+                      keep_default=False)
+
     def backwards(self, orm):
         # Deleting field 'StatisticEntry.users_online'
         db.delete_column('log_statisticentry', 'users_online')
+
+        # Deleting field 'StatisticEntry.active_users'
+        db.delete_column('log_statisticentry', 'active_users')
 
     models = {
         'auth.group': {
@@ -109,6 +117,7 @@ class Migration(SchemaMigration):
         },
         'log.statisticentry': {
             'Meta': {'ordering': "['-date']", 'object_name': 'StatisticEntry'},
+            'active_users': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
             'date': ('django.db.models.fields.DateTimeField', [], {}),
             'game_count': ('django.db.models.fields.IntegerField', [], {}),
             'game_leave_count': ('django.db.models.fields.IntegerField', [], {}),

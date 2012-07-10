@@ -15,11 +15,11 @@
 
 {% block page_width %}span8 offset2{% endblock %}
 
-{% block content %}
-        <div class="page-header">
-          <h1><img src="{{ STATIC_URL }}img/icons/glyphicons_235_pen.png"/>News</h1>
-        </div>
+{% block headline %}
+<h1><img src="{{ STATIC_URL }}img/icons/glyphicons_235_pen.png"/>News</h1>
+{% endblock %}
 
+{% block content %}
         {% for news_item in news %}
           {% include 'news/news.html' %}
           {% include 'news/news_comment_line.html' %}  

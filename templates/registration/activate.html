@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %} - Invalid activation key{% endblock %}
+
+{% block headline %}
+<h1>Invalid activation key</h1>
+{% endblock %}
+
+{% block content %}
+<div class="alert alert-error">Invalid activation key, this can have one of the following reasons:
+  <ul>
+    <li>Your account already is activated. If you can't login, try <a href="{% url django.contrib.auth.views.password_reset %}">resetting your password.</a></li>
+    <li>The key has expired. In this case, try <a href="{% url log.views.resend_activation %}">resending the activation mail.</a></li>
+    <li>If nothing of the above applies, try <a href="{% url about %}#contact">contacting an admin (see Contact).</a></li>
+  </ul>
+</div>
+{% endblock %}

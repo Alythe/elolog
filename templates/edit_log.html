@@ -5,10 +5,25 @@
   width: 30px;
 }
 {% endblock %}
+
+{% block headline %}
+<h1>{{ log.summoner_name }}</h1>
+{% endblock %}
+
 {% block content %}
-        <div class="page-header">
-          <h1>{{ log.summoner_name }}</h1>
-        </div>
+        {% if log.id %}
+        <a class="btn" href="{% url log.views.view log.id %}">
+          <i class="icon-arrow-left"></i>
+          Back
+        </a>
+        {% else %}
+        <a class="btn" href="{% url my_logs %}">
+          <i class="icon-arrow-left"></i>
+          Back
+        </a>
+        {% endif %}
+        <hr/>
+
         <form action="" method="POST">
           {{ form.errors }}
           {% csrf_token %}
@@ -53,6 +68,13 @@
               {{ form.show_on_public_list }}
             </div>
           </div>
+
+          {% if not log.id %}
+          <div class="fieldWrapper">
+            <label for="id_preset">Log layout:</label>
+            {{ form.preset }} 
+          </div>
+          {% endif %}
 
           <input type="submit" class="btn btn-primary" value="Save" />
 

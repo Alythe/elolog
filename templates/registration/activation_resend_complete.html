@@ -2,11 +2,11 @@
 
 {% block title %} - Activate{% endblock %}
 
-{% block content %}
-<div class="page-header">
-  <h1>Email activation</h1>
-</div>
+{% block headline %}
+<h1>Email activation</h1>
+{% endblock %}
 
+{% block content %}
 {% if success %}
 <div class="alert alert-success">Activation mail resent, please check your inbox (and your spam filter)!</div>
 {% else %}

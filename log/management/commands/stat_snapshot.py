@@ -1,13 +1,16 @@
 from django.core.management.base import BaseCommand, CommandError
 from log.models import Log, LogItem, StatisticEntry, OUTCOME, UserProfile
 from django.contrib.auth.models import User
+from django.utils import timezone
 import datetime
 
 class Command(BaseCommand):
   args = ''
   help = 'Takes a statistical snapshot and stores it into the database'
-
+  
   def handle(self, *args, **options):
+    timezone.activate(timezone.get_default_timezone())
+
     log_count = Log.objects.all().count()
     game_count = LogItem.objects.all().count()
     user_count = User.objects.all().count()
@@ -17,17 +20,17 @@ class Command(BaseCommand):
     total_games = logitems_won.count() + logitems_lost.count()
     wl_ratio = (float(logitems_won.count())/float(logitems_lost.count()))
     
-    logged_in_threshold = datetime.datetime.now() - datetime.timedelta(minutes=10)
+    logged_in_threshold = timezone.now() - datetime.timedelta(minutes=10)
     logged_in_profiles = UserProfile.objects.filter(last_activity__gte=logged_in_threshold)
 
-    active_threshold = datetime.datetime.now() - datetime.timedelta(days=3)
+    active_threshold = timezone.now() - datetime.timedelta(days=3)
 
     active_profiles = UserProfile.objects.filter(last_activity__gte=active_threshold)
     # do this after wl_ratio calculation
     total_games += logitems_left.count()
 
     entry = StatisticEntry()
-    entry.date = datetime.datetime.now()
+    entry.date = timezone.now()
     entry.user_count = user_count
     entry.log_count = log_count
     entry.game_count = game_count

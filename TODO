@@ -1,11 +1,8 @@
 -- TODO --
-* Warnung anzeigen wenn sich ein inaktiver Account einloggt
 * Custom fields implementieren
-* Team-Logs implementieren
-* Datum für Spiel eingeben lassen
 * HighCharts statt flotr?
-* Leaves
 * Description for public logs
+* Follow-Funktion für Public logs
 
 -- IDEAS --
 * Graph, der Gewinne auf Uhrzeit abbildet

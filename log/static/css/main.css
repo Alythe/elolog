@@ -48,6 +48,23 @@
   margin-right: 10px;
 }
 
+.backlink {
+  margin-bottom: 20px;
+}
+
+.timepicker {
+  width: 20px;
+}
+
+input.datepicker {
+  width: 80px;
+  cursor: pointer;
+}
+
+input.kda_field {
+  width: 30px;
+}
+
 ul.imprint {
   list-style-type: none;
 }

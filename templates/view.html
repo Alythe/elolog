@@ -1,10 +1,11 @@
 {% extends "base.html" %}
 {% block title %} - View log{% endblock %}
 
+{% block headline %}
+<h1>{{ log.summoner_name }} <small>Overview</small></h1>
+{% endblock %}
+
 {% block content %}
-        <div class="page-header">
-          <h1>{{ log.summoner_name }} <small>Overview</small></h1>
-        </div>
         <ul class="flat-list">
           <li>Current Elo: <strong>{{ log.current_elo }}</strong></li>
           <li>Games played: <strong>{{ log.total_games }} ({{ log.games_won }}/{{ log.games_lost }}/{{log.games_left }})</strong></li>
@@ -93,6 +94,10 @@
             <i class="icon-edit icon-white"></i>
             Edit log
           </a>
+          <a class="btn btn-warning" href="{% url log.views.view_fields log.id %}">
+            <i class="icon-list-alt icon-white"></i>
+            Edit fields
+          </a>
           {% endif %}
           <a class="btn" href="graph">
             <i class="icon-list-alt"></i>
@@ -112,14 +117,15 @@
           </a>
           {% endif %}
         </div>
-        
+
+        {% if log_item_list %}
         <table class="table">
         <thead>
           <tr>
-            <th>#</th>
-            <th>Champion</th>
-            <th>Elo Gain</th>
-            <th>Text</th>
+            <th width="5%">#</th>
+            {% for field in field_list %}
+            <th>{{ field.name }}</th>
+            {% endfor %}
             <th></th>
           </tr>
         </thead>
@@ -133,11 +139,14 @@
           <tr id="{{ item.id }}" class="background-yellow">
           {% endif %}
             <td>{{ item.nr }}</td>
-            <td><img src="{{ STATIC_URL }}img/champions/{{ item.champion.image }}"></img></td>
+            {% for value in item.field_values %}
+            <td>{{ value|safe }}</td>
+            {% endfor %}
+            <!--<td><img src="{{ STATIC_URL }}img/champions/{{ item.champion.image }}"></img></td>
             <td>
               <span class={% if item.elo_gain < 0 %} "shade-red" {% else %} "shade-green" {% endif %}>{{ item.elo_gain }}</span>
             </td>
-            <td>{{ item.text|linebreaks }}</td>
+            <td>{{ item.text|linebreaks }}</td>-->
             <td>
               {% if not is_public %}
               <div class="btn-group">
@@ -176,4 +185,5 @@
       });
       
       </script>
+      {% endif %}
 {% endblock %}

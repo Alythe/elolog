@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load get_range %}
+{% load pretty_format_date %}
 {% block title %} - Home{% endblock %}
 
 {% block style %}
@@ -10,18 +11,15 @@
   }
 {% endblock %}
 
+{% block headline %}
+  {% if is_public %}
+    <h1><img src="{{ STATIC_URL }}img/icons/glyphicons_039_notes.png"/>Public logs</h1>
+  {% else %}
+    <h1><img src="{{ STATIC_URL }}img/icons/glyphicons_039_notes.png"/>My logs</h1>
+  {% endif %}
+{% endblock %}
+
 {% block content %}
-        <div class="page-header">
-          {% if is_public %}
-          <h1><img src="{{ STATIC_URL }}img/icons/glyphicons_039_notes.png"/>Public logs</h1>
-          {% else %}
-          <h1><img src="{{ STATIC_URL }}img/icons/glyphicons_039_notes.png"/>My logs</h1>
-          {% endif %}
-        </div>
-        {% if not is_public %}
-        <a href="/accounts/password/change/">Change password</a>
-        <hr/>
-        {% endif %}
         {% if not log_list and not is_public %}
         <div class="alert alert-success">
           Start using EloLog now by starting a new log with a click on the button below!
@@ -72,6 +70,7 @@
             <th>Elo</th>
             <th>Games</th>
             <th>Ratio</th>
+            <th>Last update</th>
           </tr>
         </thead>
         <tbody>
@@ -87,6 +86,7 @@
             <td>{{ log.current_elo }}</td>
             <td>{{ log.total_games }} ({{ log.games_won }}/{{ log.games_lost }}/{{log.games_left }})</td>
             <td>{{ log.win_loss_ratio }}</td>
+            <td>{{ log.last_update|pretty_format_date:log.user }}</td>
           </tr>
           {% endfor %}
         </tbody>

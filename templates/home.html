@@ -24,16 +24,14 @@ h2 img {
 }
 {% endblock %}
 
-{% block content %}
-        <div class="page-header">
-          <h1>EloLog <small>Home</small></h1>
-        </div>
+{% block headline %}<h1>EloLog <small>Home</small></h1>{% endblock %}
 
+{% block content %}
         {% if not user.is_authenticated %}
         <p>New to EloLog? <a href="{% url about %}">Find out</a> what this is about!</p>
         <p>Want to start improving? Click "Sign in" in the top right corner or create an account <a href="{% url registration_register %}"> here</a>.
         {% else %}
-        <p>Welcome back, <strong>{{ user.username }}</strong>! Your last visit was <strong>{{ user.last_login }}</strong></p>
+        <p>Welcome back, <strong>{{ user.username }}</strong>! Your last visit was <strong>{{ last_login_str  }}</strong></p>
         {% endif %}
         <hr/>
         <div class="row">
@@ -51,6 +49,15 @@ h2 img {
             <p>Of a total of <strong>{{ logitems_count }}</strong> games, <strong>{{ logitems_won.count }}</strong> were won, <strong>{{ logitems_lost.count }}</strong> were lost. That's a Win/Loss-Ratio of <strong>{{ wl_ratio }}</strong>.</p>
             <p><strong>{{ public_logs.count }}</strong> logs are publicly viewable, <strong>{{ public_logs_on_list.count }}</strong> of them are <a href="{% url public_logs %}">listed</a>.</p>
             <p>There are currently <strong>{{ logged_in_profiles.count }}</strong> users logged in.</p>
+            <script type="text/javascript"><!--
+              google_ad_client = "ca-pub-2248304763819491";
+              /* Large Block */
+              google_ad_slot = "2448958190";
+              google_ad_width = 336;
+              google_ad_height = 280;
+              //-->
+            </script>
+            <script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>
           </div>
         </div>
 {% endblock %}

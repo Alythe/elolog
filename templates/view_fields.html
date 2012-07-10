@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% block title %} - Fields{% endblock %}
+
+{% block headline %}
+<h1>{{ log.summoner_name }} <small>Fields</small></h1>
+{% endblock %}
+
+{% block content %}
+        <a class="btn" href="{% url log.views.view log.id %}">
+          <i class="icon-arrow-left"></i>
+          Back
+        </a>
+        <hr/>
+
+        <div class="modal hide fade" id="md-confirm-delete">
+          <div class="modal-header">
+            <button class="close" data-dismiss="modal">×</button>
+            <h3>Are you sure?</h3>
+          </div>
+          <div class="modal-body">
+            <p>Do you really want to delete the Elolog for <strong>{{ log.summoner_name }}</strong>?</p>
+            <p>All your log entries will be lost.</p>
+          </div>
+          <div class="modal-footer">
+            <button class="btn" data-dismiss="modal">No, cancel</button>
+            <a class="btn btn-danger" href="">Yes, delete</a>
+          </div>
+        </div>
+
+        <div class="modal hide fade" id="md-confirm-delete-field">
+          <div class="modal-header">
+            <button class="close" data-dismiss="modal">×</button>
+            <h3>Are you sure?</h3>
+          </div>
+          <div class="modal-body">
+            <p>Do you really want to delete this field?</p>
+            <div class="alert alert-danger">When you delete this field, every log entry will lose this fields data! This is irreversible!</div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn" data-dismiss="modal">No, cancel</button>
+            <a class="btn btn-danger" id="md-btn-delete" href="#">Yes, delete</a>
+          </div>
+        </div>
+
+        {% if add_new_allowed %}
+        <div class="btn-toolbar">
+          <a class="btn btn-success" href="new">
+            <i class="icon-pencil icon-white"></i>
+            Add field
+          </a>
+        </div>
+        {% endif %}
+        
+        <table class="table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th width="10%">Display on overview</th>
+            <th>Ordering</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for field in field_list %}
+            <td>{{ field.name }}</td>
+            <td>{{ field.get_type_display }}</td>
+            <td>
+              {% if field.display_on_overview %}
+                <i class="icon-ok"></i>
+              {% else %}
+                <i class="icon-remove"></i>
+              {% endif %}
+            </td>
+            <td>
+              {% if field.order > 0 %}
+              <a href="{% url log.views.order_field_up log.id field.id %}"><i class="icon-arrow-up"></i></a>
+              {% endif %}
+              {% if not field == last_field %}
+              <a href="{% url log.views.order_field_down log.id field.id %}"><i class="icon-arrow-down"></i></a>
+              {% endif %}
+            </td>
+            <td>
+              <div class="btn-group">
+                <button class="btn btn-mini dropdown-toggle" data-toggle="dropdown">
+                  <i class="icon-cog"></i>
+                  <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                  <li>
+                  <a href="{% url log.views.edit_field log.id field.id %}">
+                      <i class="icon-edit"></i>
+                      Edit
+                    </a>
+                  </li>
+                  <li class="divider"></li>
+                  <li>
+                  <a href="#md-confirm-delete-field" data-toggle="modal" data-id="{{ field.id }}" class="open-md-confirm-delete-item">
+                      <i class="icon-trash"></i>
+                      Delete
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <script>
+      $(document).on("click", ".open-md-confirm-delete-item", function () {
+        var item_id = $(this).data('id');
+        var current_href = $(".modal-footer #md-btn-delete").prop('href')
+        $(".modal-footer #md-btn-delete").prop('href', '/logs/{{ log.id }}/fields/delete/' + item_id);
+        $('#md-confirm-delete-item').modal('show');
+      });
+      
+      </script>
+{% endblock %}

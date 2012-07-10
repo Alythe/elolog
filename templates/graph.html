@@ -1,27 +1,25 @@
 {% extends "base.html" %}
 {% block title %} - Graphs{% endblock %}
 
-{% block content %}
-        <div class="page-header">
-          <h1>{{ log.summoner_name }} <small>Graphs</small></h1>
-        </div>
-        {% if is_public %}
-          <a class="btn" href="{% url log.views.view log_id %}">
-            <i class="icon-arrow-left"></i>
-            Back
-          </a>
-        {% else %}
-          <a class="btn" href="{% url log.views.view log_id %}">
-            <i class="icon-arrow-left"></i>
-            Back
-          </a>
+{% block headline %}
+<h1>{{ log.summoner_name }} <small>Graphs</small></h1>
+{% endblock %}
 
-        {% endif %}
+{% block content %}
+        <a class="btn" href="{% url log.views.view log_id %}">
+          <i class="icon-arrow-left"></i>
+          Back
+        </a>
         <hr/>
         {% if log_empty %}
         <div class="alert alert-warning">
           Your EloLog is empty!
         </div>
+        {% elif not has_graph %}
+        <div class="alert alert-warning">
+          For now, EloLog only supports one lousy graph and it needs your log to have an Elo field, sorry. Here, have this picture of my amazingly good looking dog in winter instead:
+        </div>
+        <img src="{{ STATIC_URL }}img/dog.jpg"></img>
         {% else %}
         {% block header %}
         <script src="{{ STATIC_URL }}js/flot/jquery.flot.js"></script>

@@ -3,10 +3,11 @@
 
 {% block page_width %}span8 offset2{% endblock %}
 
+{% block headline %}
+<h1><img src="{{ STATIC_URL }}img/icons/glyphicons_195_circle_info.png"/>About <small>Elolog</small></h1>
+{% endblock %}
+
 {% block content %}
-        <div class="page-header">
-          <h1><img src="{{ STATIC_URL }}img/icons/glyphicons_195_circle_info.png"/>About <small>Elolog</small></h1>
-        </div>
         <p>Elolog is a place for you to keep track of your League of Legends game experiences. This helps you seeing your improvements faster and start working on whatever deficits you have.</p>
         <ul>
           <li>You can view your log entries in a graph, to see how your Elo changed since you started.</li>
@@ -26,7 +27,7 @@
         <p>The fancy icons were provided by <a href="http://glyphicons.com/">Glyphicons</a> for free.</p>
         <h2>Thanks to</h2>
         ... <a href="http://www.rakalakalili.com/">rakalakalili</a>, a very cool streamer that gave me this idea. If you are wondering why you are stuck in low Elo, record your games with LoLReplay, send your replay to rakalakalili and he will show you your mistakes on his stream!
-        <h2>Contact</h2>
+        <h2 id="contact">Contact</h2>
         <p>If you have any questions, want to give feedback or treat me to a beer contact me on one of the following addresses:</p>
         <ul>
           <li>support (AT) elolog.net (email)</li>
