@@ -231,7 +231,7 @@ class LogCustomFieldValue(models.Model):
   _value = models.TextField(db_column='value', blank=True)
 
   def set_value(self, value):
-    self._value = str(value)
+    self._value = unicode(value)
 
   def get_value(self):
     return self._value or ""

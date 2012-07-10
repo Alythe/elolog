@@ -3,7 +3,7 @@ import datetime
 from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
-import pyzt
+import pytz
 
 
 class Migration(SchemaMigration):
@@ -11,7 +11,7 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
         # Adding field 'Log.last_update'
         db.add_column('log_log', 'last_update',
-                      self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime(1970, 1, 1, 0, 0).replace(tzinfo=pytz.utc, blank=True),
+                      self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime(1970, 1, 1, 0, 0).replace(tzinfo=pytz.utc), blank=True),
                       keep_default=False)
 
 

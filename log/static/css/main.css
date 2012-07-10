@@ -79,3 +79,7 @@ div.imprint a {
   color: #aaaaaa;
   text-decoration: underline;
 }
+
+.newscontent h2 {
+  font-size: 14px;
+}
