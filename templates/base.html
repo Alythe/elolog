@@ -41,6 +41,9 @@
           </button>
           <ul class="dropdown-menu">
             <li><a href="{% url log.views.user_settings %}"><i class="icon-cog"></i> Settings</a></li>
+            {% if user.is_staff %}
+            <li><a href="/admin"><i class="icon-wrench"></i> Admin</a></li>
+            {% endif %}
             <li class="divider"></li>
             <li><a href="/logout"><i class="icon-off"></i> Logout</a></li>
           </ul>
