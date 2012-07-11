@@ -290,8 +290,12 @@ def delete_item(request, log_id, item_id):
   if not request.user.id == log.user.id:
     return HttpResponseRedirect(reverse('log.views.index'))
 
-  item = log.logitem_set.get(id=item_id)
-  item.delete()
+  # FIXME Do something instead of just failing silently
+  try:
+    item = log.logitem_set.get(id=item_id)
+    item.delete()
+  except ObjectDoesNotExist:
+    pass
 
   return HttpResponseRedirect(reverse('log.views.view', args=[log_id]))
 
@@ -365,7 +369,7 @@ def edit_log(request, log_id=None):
 
 def view_fields(request, log_id):
   if not request.user.is_authenticated():
-    return HttpResponseREdirect(reverse('log.views.index'))
+    return HttpResponseRedirect(reverse('log.views.index'))
 
   log = get_object_or_404(Log, pk=log_id)
 
@@ -412,7 +416,7 @@ def edit_field(request, log_id, field_id=None):
       
       for item in log.logitem_set.all():
         for custom_value in item.logcustomfieldvalue_set.filter(custom_field=field):
-          custom_value.set_value(field.get_form_field().convert_value(custom_value.get_value()))
+          custom_value.set_value(field.get_form_field(log.user).convert_value(custom_value.get_value()))
           custom_value.save()
 
 

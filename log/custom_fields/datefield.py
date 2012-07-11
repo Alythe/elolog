@@ -57,6 +57,9 @@ class DateField(MultiValueField, CustomField):
     return self.compress(data)
 
   def render(self, data):
-    dt = datetime.datetime.fromtimestamp(float(data), timezone.utc).astimezone(timezone.get_current_timezone())
+    try:
+      dt = datetime.datetime.fromtimestamp(float(data), timezone.utc).astimezone(timezone.get_current_timezone())
+    except ValueError:
+      return ""
     return "%s %s" % (dt.strftime(self.date_format),
         dt.strftime(self.time_format))
