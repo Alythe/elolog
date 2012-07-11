@@ -13,9 +13,13 @@ class ChampionField(ModelChoiceField, CustomField):
       champ_id = int(data)
     except ValueError:
       champ_id = 1
-    champ = log.models.Champion.objects.get(pk=champ_id)
-    
-    return "<img src=\"%simg/champions/%s\"></img>" % (settings.STATIC_URL, champ.image)
+
+    try:
+      champ = log.models.Champion.objects.get(pk=champ_id)
+    except ObjectDoesNotExist:
+      return ""
+   
+    return "<img src=\"%simg/champions/%s\" width=\"80px\"></img>" % (settings.STATIC_URL, champ.image)
 
   def format_value(self, value):
     try:
