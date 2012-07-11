@@ -19,7 +19,7 @@ class ChampionField(ModelChoiceField, CustomField):
     except ObjectDoesNotExist:
       return ""
   
-    if champ.image == "":
+    if champ.image == "-":
       return ""
 
     return "<img src=\"%simg/champions/%s\" width=\"80px\"></img>" % (settings.STATIC_URL, champ.image)
@@ -55,7 +55,7 @@ class SmallChampionField(ChampionField):
     except (ObjectDoesNotExist, ValueError):
       return ""
    
-    if champ.image == "":
+    if champ.image == "-":
       return ""
 
     return "<img src=\"%simg/champions/%s\" width=\"30px\" height=\"30px\"></img>" % (settings.STATIC_URL, champ.image)
