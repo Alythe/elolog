@@ -14,18 +14,34 @@
         <hr/>
 
         <form action="" method="POST">
-          {{ form.errors }}
           {% csrf_token %}
 
-          {% for field in form %}
-          <div class="fieldWrapper">
-              {{ field.errors }}
-              {{ field.label_tag }}
-              {{ field }}
-            </div>
-          {% endfor %}
+          <table class="table">
+            <thead>
+              <tr>
+                <th></th>
+                <th colspan="2" style="text-align: right"><a href="#" rel="tooltip" title="Checking this boxes will delete a value, leaving it blank when saving.">Ignore/Delete value</a></th>
+                <th></th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for field in form %}
+              {% if field.name in form.custom_fields or field.name == "outcome" %}
+              <tr>
+                <th>{{ field.label_tag }}</th>
+                <td>{{ field }} {{ field.required }}</td>
+                <td>{% if field.name != "outcome" %}{{ field.field.ignore_field }}{% endif %}</td>
+                <td>{{ field.errors|safe }}</td>
+              </tr>
+              {% endif %}
+              {% endfor %}
+            </tbody>
+          </table>
 
           <input type="submit" class="btn btn-primary" value="Save" />
-
+            <script type="text/javascript">
+            $("document").ready(function(){$("[rel=tooltip]").tooltip();})
+            </script>
         </form>
 {% endblock %}

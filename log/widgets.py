@@ -145,4 +145,3 @@ class BBEditor(Textarea):
           "cleditor/jquery.cleditor.min.js",
           "cleditor/jquery.cleditor.bbcode.min.js",
         )
-

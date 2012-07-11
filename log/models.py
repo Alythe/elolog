@@ -248,6 +248,9 @@ class LogCustomFieldValue(models.Model):
   def get_custom_field(self):
     return self.custom_field
 
+  def __unicode__(self):
+    return "CustomFieldValue: '%s'" % self.get_value()
+
   data = property(get_value, set_value)
 
 class News(models.Model):

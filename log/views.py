@@ -3,6 +3,7 @@
 from django.http import HttpResponse, HttpResponseRedirect
 from log.models import Log, LogItem, News, Comment, OUTCOME, UserProfile, StatisticEntry, LogCustomField
 from log.forms import LogForm, LogItemForm, CommentForm, ResendActivationForm, CustomFieldForm, UserSettingsForm
+from log.forms import AlertDivErrorList
 from log.custom_fields.types import FieldTypes
 from django.core.exceptions import ObjectDoesNotExist
 from django.template import Context, loader, RequestContext
@@ -324,14 +325,14 @@ def edit_item(request, log_id, item_id=None):
     item = LogItem(log=log)
 
   if request.method == 'POST':
-    form = LogItemForm(request.POST, user=request.user, instance=item)
+    form = LogItemForm(request.POST, user=request.user, instance=item, error_class=AlertDivErrorList)
 
     if form.is_valid():
       form.save()
 
       return HttpResponseRedirect(reverse('log.views.view', args=[log_id]))
   else:
-    form = LogItemForm(user=request.user, instance=item)
+    form = LogItemForm(user=request.user, instance=item, error_class=AlertDivErrorList)
 
   return render_to_response('edit_item.html', RequestContext(request, {'form': form, 'item': item, 'log': log}))
 
@@ -412,7 +413,7 @@ def edit_field(request, log_id, field_id=None):
       
       for item in log.logitem_set.all():
         for custom_value in item.logcustomfieldvalue_set.filter(custom_field=field):
-          custom_value.set_value(field.get_form_field().convert_value(custom_value.get_value()))
+          custom_value.set_value(field.get_form_field(request.user).convert_value(custom_value.get_value()))
           custom_value.save()
 
 

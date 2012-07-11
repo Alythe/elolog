@@ -1,10 +1,22 @@
 from django.forms import ModelForm, CharField, Textarea, Form, EmailField, ValidationError, ChoiceField, Select
+from django.forms.util import ErrorList
 from log.models import Log, LogItem, Comment, LogCustomFieldValue, LogCustomField, UserProfile, LOGITEMS_PER_PAGE_CHOICES
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render_to_response, get_object_or_404
 
+from log.fields import IgnoreField
 from log.custom_fields import presets
+
+class AlertDivErrorList(ErrorList):
+  def __unicode__(self):    
+    return self.view_as_div()
+  
+  def view_as_div(self):
+    if not self: 
+      return u'' 
+    
+    return u'<div class="alert alert-error">%s</div>' % '<br/>'.join([u'<span>%s</span>' % e for e in self])
 
 class LogForm(ModelForm):
   def __init__(self, *args, **kwargs):
@@ -97,13 +109,42 @@ class LogItemForm(ModelForm):
     if self.instance:
       for field in self.instance.log.logcustomfield_set.all():
         value = None
+        value_obj = None
         if self.instance.id:
-          value = self.instance.logcustomfieldvalue_set.get_or_create(log_item=self.instance, custom_field=field)[0].get_value()
+          try:
+            value_obj = self.instance.logcustomfieldvalue_set.get(log_item=self.instance, custom_field=field)
+            value = value_obj.get_value()
+          except ObjectDoesNotExist:
+            pass
+       
+        ignore_field_name = "%s_ignore" % field.name
         
-        self.fields[field.name] = field.get_form_field(user, initial=value)
+        """if data:
+          if ignore_field_name in data:
+            if value_obj:
+              value_obj.delete()
+            continue"""
         
+        self.fields[field.name] = field.get_form_field(user, required=False, initial=value)
+        
+        ignore_field_value = False
+        if self.data and ignore_field_name in self.data:
+          ignore_field_value = True
+
+        self.fields[ignore_field_name] = IgnoreField(required=False)
+        self.fields[field.name].ignore_field = self[ignore_field_name]
+
         self.fields[field.name].label = field.name
         self.custom_fields[field.name] = field
+
+  def clean(self):
+    super(LogItemForm, self).clean()
+    for field in self.custom_fields:
+      ignore_field_name = "%s_ignore" % field
+      if ignore_field_name in self.cleaned_data and self.cleaned_data[ignore_field_name] and field in self._errors:
+        del self._errors[field]
+
+    return self.cleaned_data   
 
   def save(self, force_insert=False, force_update=False, commit=True):
     o = super(LogItemForm, self).save(commit=False)
@@ -112,8 +153,18 @@ class LogItemForm(ModelForm):
       o.save()
  
     for field in self.custom_fields:
+      ignore_field_name = "%s_ignore" % field        
+
       # insert
-      value = self.instance.logcustomfieldvalue_set.get_or_create(log_item=self.instance, custom_field=self.custom_fields[field])[0]
+      try:
+        value = self.instance.logcustomfieldvalue_set.get(log_item=self.instance, custom_field=self.custom_fields[field])
+      except ObjectDoesNotExist:
+        value = LogCustomFieldValue(log_item=self.instance, custom_field = self.custom_fields[field])
+
+      if self.cleaned_data[ignore_field_name]:
+        if value.id:
+          value.delete()
+        continue
         
       value.set_value(self.cleaned_data[field])
       value.save()

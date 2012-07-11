@@ -79,3 +79,7 @@ div.imprint a {
   color: #aaaaaa;
   text-decoration: underline;
 }
+
+input.ignore {
+  display: inline;
+}

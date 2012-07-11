@@ -1,4 +1,5 @@
 class CustomField:
+  ignore_field = None
   def __init__(self, user):
     self.user = user
     pass
