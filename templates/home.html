@@ -36,7 +36,7 @@ h2 img {
         <hr/>
         <div class="row">
           <div class="span5">
-            <h2><img src="{{ STATIC_URL }}img/icons/glyphicons_235_pen.png"/>Latest news</h2>
+            <h2><img src="{{ STATIC_URL }}img/icons/glyphicons_235_pen.png"></img>Latest news</h2>
             {% include 'news/news.html' %}
             {% include 'news/news_comment_line.html' %}
 
@@ -49,6 +49,7 @@ h2 img {
             <p>Of a total of <strong>{{ logitems_count }}</strong> games, <strong>{{ logitems_won.count }}</strong> were won, <strong>{{ logitems_lost.count }}</strong> were lost. That's a Win/Loss-Ratio of <strong>{{ wl_ratio }}</strong>.</p>
             <p><strong>{{ public_logs.count }}</strong> logs are publicly viewable, <strong>{{ public_logs_on_list.count }}</strong> of them are <a href="{% url public_logs %}">listed</a>.</p>
             <p>There are currently <strong>{{ logged_in_profiles.count }}</strong> users logged in.</p>
+            {# {% if not DEVELOPMENT %}
             <script type="text/javascript"><!--
               google_ad_client = "ca-pub-2248304763819491";
               /* Large Block */
@@ -58,6 +59,7 @@ h2 img {
               //-->
             </script>
             <script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>
+            {% endif %} #}
           </div>
         </div>
 {% endblock %}

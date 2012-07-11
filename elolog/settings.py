@@ -1,6 +1,6 @@
 # Django settings for elolog project.
 import os.path
-from local_settings import DATABASES, EMAIL_BACKEND, STATIC_ROOT, STATIC_URL
+from local_settings import DATABASES, EMAIL_BACKEND, STATIC_ROOT, STATIC_URL, DEVELOPMENT
 
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
 
@@ -153,6 +153,7 @@ TEMPLATE_CONTEXT_PROCESSORS = {
   'django.core.context_processors.static',
   'django.core.context_processors.request',
   'django.contrib.messages.context_processors.messages',
+  'log.context_processors.development_processor',
 }
 
 AUTH_PROFILE_MODULE = 'log.UserProfile'

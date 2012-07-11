@@ -31,8 +31,6 @@
         </a>
         <a class="brand" href="/">EloLog</a>
 
-
-
         {% if user.is_authenticated %}
         <div class="btn-group pull-right">
           <button class="btn btn-warning dropdown-toggle" data-toggle="dropdown">
@@ -42,7 +40,7 @@
           <ul class="dropdown-menu">
             <li><a href="{% url log.views.user_settings %}"><i class="icon-cog"></i> Settings</a></li>
             {% if user.is_staff %}
-            <li><a href="/admin"><i class="icon-wrench"></i> Admin</a></li>
+            <li><a href="/backend"><i class="icon-wrench"></i> Admin</a></li>
             {% endif %}
             <li class="divider"></li>
             <li><a href="/logout"><i class="icon-off"></i> Logout</a></li>
@@ -78,6 +76,7 @@
             {% block headline %}{% endblock %}
           </div>
           <div class="ad">
+          {% if not DEVELOPMENT %}
           <script type="text/javascript"><!--
             google_ad_client = "ca-pub-2248304763819491";
             /* Horizontal */
@@ -89,6 +88,7 @@
             <script type="text/javascript"
             src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
           </script>
+          {% endif %}
           </div>
         {% block content %}{% endblock %}
         </div>

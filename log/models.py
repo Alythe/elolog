@@ -35,6 +35,14 @@ TIME_FORMAT_CHOICES = (
   ('%I:%M %p', '12 hours (am/pm)'),
 )
 
+LOGITEMS_PER_PAGE_CHOICES = (
+  (10, '10'),
+  (20, '20'),
+  (30, '30'),
+  (40, '40'),
+  (50, '50'),
+)
+
 TIME_ZONE_CHOICES = ()
 
 for tz in pytz.common_timezones:
@@ -71,6 +79,7 @@ class UserProfile(models.Model):
   date_format = models.CharField(max_length=256, choices=DATE_FORMAT_CHOICES, default='%d.%m.%Y')
   time_format = models.CharField(max_length=256, choices=TIME_FORMAT_CHOICES, default='%H:%M')
   time_zone = models.CharField(max_length=256, choices=TIME_ZONE_CHOICES, default=settings.TIME_ZONE)
+  logitems_per_page = models.IntegerField(choices=LOGITEMS_PER_PAGE_CHOICES, default=20, blank=False)
 
   def update_activity(self):
     self.last_activity = timezone.now()

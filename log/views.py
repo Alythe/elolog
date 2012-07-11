@@ -134,7 +134,7 @@ def view(request, log_id, public=False):
       item.elo_gain = elo_gain[size - 1 - index]
     index += 1
 
-  paginator = Paginator(log_item_list_r, 25)
+  paginator = Paginator(log_item_list_r, request.user.get_profile().logitems_per_page)
   page = request.GET.get('p')
 
   try:

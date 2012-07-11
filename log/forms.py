@@ -1,5 +1,5 @@
 from django.forms import ModelForm, CharField, Textarea, Form, EmailField, ValidationError, ChoiceField, Select
-from log.models import Log, LogItem, Comment, LogCustomFieldValue, LogCustomField, UserProfile
+from log.models import Log, LogItem, Comment, LogCustomFieldValue, LogCustomField, UserProfile, LOGITEMS_PER_PAGE_CHOICES
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render_to_response, get_object_or_404
@@ -147,6 +147,8 @@ class ResendActivationForm(Form):
   email = EmailField(required=True)
 
 class UserSettingsForm(ModelForm):
+  logitems_per_page = ChoiceField(label="Log items per page", choices=LOGITEMS_PER_PAGE_CHOICES)
+
   class Meta:
     model = UserProfile
-    fields = ('date_format', 'time_format', 'time_zone')
+    fields = ('date_format', 'time_format', 'time_zone', 'logitems_per_page')

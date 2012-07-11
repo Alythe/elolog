@@ -55,7 +55,7 @@ urlpatterns = patterns('',
     url(r'^imprint/$', direct_to_template, {'template': 'imprint.html'}, name='imprint'),
     url(r'^privacy/$', direct_to_template, {'template': 'privacy.html'}, name='privacy'),
     # Uncomment the next line to enable the admin:
-    url(r'^admin/', include(admin.site.urls)),
+    url(r'^backend/', include(admin.site.urls)),
     #(r'^forum/', include('djangobb_forum.urls', namespace='djangobb')),
 )
 

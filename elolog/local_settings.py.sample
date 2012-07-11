@@ -24,3 +24,8 @@ STATIC_ROOT = "/srv/http/elolog_static"
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
 STATIC_URL = "http://localhost/elolog_static/"
+
+# Development environment
+# *ALWAYS* set this to True if you're not working directly on elolog.net
+# Not doing so could cause Google to close the AdSense application
+DEVELOPMENT = True
