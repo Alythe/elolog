@@ -18,7 +18,10 @@ class ChampionField(ModelChoiceField, CustomField):
       champ = log.models.Champion.objects.get(pk=champ_id)
     except ObjectDoesNotExist:
       return ""
-   
+  
+    if champ.image == "":
+      return ""
+
     return "<img src=\"%simg/champions/%s\" width=\"80px\"></img>" % (settings.STATIC_URL, champ.image)
 
   def format_value(self, value):
@@ -51,5 +54,8 @@ class SmallChampionField(ChampionField):
       champ = log.models.Champion.objects.get(pk=int(data))
     except (ObjectDoesNotExist, ValueError):
       return ""
-    
+   
+    if champ.image == "":
+      return ""
+
     return "<img src=\"%simg/champions/%s\" width=\"30px\" height=\"30px\"></img>" % (settings.STATIC_URL, champ.image)
