@@ -8,23 +8,29 @@
 {% endblock %}
 
 {% block content %}
-        <p>Elolog is a place for you to keep track of your League of Legends game experiences. This helps you seeing your improvements faster and start working on whatever deficits you have.</p>
+<p>League of Legends (or LoL) is a so-called MOBA (Multiplayer online battle arena) game, based on the very successful DOTA (Defense of the Ancient). In LoL, two teams try to destroy the other teams <em>Nexus</em>. Each player (also called <em>Summoner</em>) chooses a different <em>Champion</em>, a character with unique abilities. Champions get gold for killing neutral monsters, enemy champions and enemy towers. This gold can be used to buy countless items that change a champions attributes.</p>
+<p>There is a very big and active eSports community that has formed around League of Legends, with many online and offline tournaments. Players can test their skills against other players in the ranked ladder, playing with 3-4 random people against 5 other random people.</p>
+<p>With at the moment one hundred different champions and about 107 items, you get at least 2,392,407,864 different combinations (according to the <a href="http://leagueoflegends.wikia.com/wiki/Item">League of Legends Wiki</a>) of how to play the game. Take in the other variables and you can already tell that it is very hard to keep a clear view on how you perform and where your weak points are.</p>
+<p>Elolog is a place for you to keep track of your <a href="http://leagueoflegends.com/">League of Legends</a> game experiences. This helps you keeping a clear view, monitor your improvements better and start working on whatever deficits you have. Start with creating a Log that contains exactly the information you want. Play a game of League of Legends and afterwards take your time and replay the game in your head. Think about what you did wrong. Think about your reactions to certain situations. Think about what you did right! Think about what worked out well. Take all these thoughts and write them into your log. Reread them and then start playing again. Repeat this process for every game and you will definitely see yourself improve.<br/><br/>Good luck, summoner!</p>
+<h2>Features</h2>
         <ul>
+          <li>Registration is free and painless.</li>
+          <li>You can create as many logs as you want (e.g. for different accounts), for every account you have or a separate log for your normal games.</li>
           <li>You can view your log entries in a graph, to see how your Elo changed since you started.</li>
-          <li>Elolog does not try to lock your data up, if you decide to stop using it you can export everything you entered as CSV formatted files.</li>
-          <li>Registration is free and painless</li>
-          <li>Your logs are private, no one can see them.</li>
-          <li>If you want to share your logs you can publish them under a safe URL. Doing this enables all visitors (even non-registered) to view your log when you share the URL. This can be useful if you give lessons and want to watch the progress of your disciples.</li>
-          <li>You can create as many logs as you want (e.g. for different accounts)</li>
+          <li>Elolog does not try to lock up your data, if you decide to stop using it you can export everything you entered as CSV formatted files.</li>
+          <li>Your logs contain your personal thoughts, therefore they are private, no one can see them ...</li>
+          <li>... but if you want to share your logs you can publish them under a safe URL. Doing this enables all visitors (even non-registered) to view your log when you share the URL or decide to show it on the <a href="{% url public_logs %}">public list</a>.</li>
+          <li>If you are an experienced player that wants to teach others, let them create a log and watch them improve!</li>
         </ul>
-        <p>A screenshot for the undecided:</p>
-        <div class="thumbnail">
-          <a href="{{ STATIC_URL }}img/log_view_sample.png"><img src="{{ STATIC_URL }}img/log_view_sample.png" width="50%" height="50%"/></a>
+        <div class="thumbnail" style="text-align: center">
+          <a href="{{ STATIC_URL }}img/log_view_sample.png"><img src="{{ STATIC_URL }}img/log_view_sample.png" width="45%" height="45%"/></a>
+          <a href="{{ STATIC_URL }}img/log_view_sample2.png"><img src="{{ STATIC_URL }}img/log_view_sample2.png" width="45%" height="45%"/></a>
         </div>
         
         <h2>Used Tools</h2>
         <p>This project was developed using <a href="http://www.python.org/">Python</a>, <a href="https://www.djangoproject.com/">Django</a>, <a href="http://www.mysql.com/">MySQL</a> and <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap</a>.</p>
         <p>The fancy icons were provided by <a href="http://glyphicons.com/">Glyphicons</a> for free.</p>
+        <p>I use <a href="http://piwik.org">Piwik</a> as an easy and secure way to analyze site traffic.</p>
         <h2>Thanks to</h2>
         ... <a href="http://www.rakalakalili.com/">rakalakalili</a>, a very cool streamer that gave me this idea. If you are wondering why you are stuck in low Elo, record your games with LoLReplay, send your replay to rakalakalili and he will show you your mistakes on his stream!
         <h2 id="contact">Contact</h2>

@@ -23,14 +23,15 @@ class KDAField(fields.MultiValueField):
   def compress(self, data_list):
     if data_list:
       if not (data_list[0] and data_list[1] and data_list[2]):
-        raise forms.ValidationError("Field is imssing data.")
+        raise forms.ValidationError("Field is missing data.")
 
       try:
-        data_list[0] = int(data_list[0])
-        data_list[1] = int(data_list[1])
-        data_list[2] = int(data_list[2])
+        tmp = [ 0, 0, 0 ]
+        tmp[0] = int(data_list[0])
+        tmp[1] = int(data_list[1])
+        tmp[2] = int(data_list[2])
 
-        if data_list[0] < 0 or data_list[1] < 0 or data_list[2] < 0:
+        if tmp[0] < 0 or tmp[1] < 0 or tmp[2] < 0:
           raise ValueError()
 
       except ValueError:
