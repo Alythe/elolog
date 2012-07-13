@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Elolog{% block title %}{% endblock %}</title>
+  <title>EloLog{% block title %}{% endblock %}</title>
+  <meta content="text/html; charset=utf-8" http-equiv="content-type">
+  <meta lang="en" content="Analyze your League of Legends games to improve yourself." name="description">
+  <meta content="Fabian Schlager" name="author">
+  <meta content="League of Legends, LoL, MOBA, Dota, Ranked, Ladder, Improvement, Analyzing, Writing, Champions, eSport, video games, competetive, Elo" name="keywords">
   <link href="{{ STATIC_URL }}css/bootstrap.min.css" media="screen" rel="stylesheet" />
   <link href="{{ STATIC_URL }}css/bootstrap-responsive.css" rel="stylesheet" />
   <link href="{{ STATIC_URL }}css/main.css" rel="stylesheet" />
@@ -88,6 +92,19 @@
         <div class="content">
           <div class="page-header">
             {% block headline %}{% endblock %}
+          </div>
+          <div class="ad">
+          <script type="text/javascript"><!--
+            google_ad_client = "ca-pub-2248304763819491";
+            /* Horizontal */
+            google_ad_slot = "5873791829";
+            google_ad_width = 468;
+            google_ad_height = 60;
+            //-->
+          </script>
+          <script type="text/javascript"
+            src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+          </script>
           </div>
         {% block content %}{% endblock %}
         </div>
