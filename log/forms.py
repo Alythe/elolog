@@ -116,26 +116,21 @@ class LogItemForm(ModelForm):
             value = value_obj.get_value()
           except ObjectDoesNotExist:
             pass
-       
-        ignore_field_name = "%s_ignore" % field.name
+      
+        field_name = str(field.id)
+        ignore_field_name = "%s_ignore" % field_name
         
-        """if data:
-          if ignore_field_name in data:
-            if value_obj:
-              value_obj.delete()
-            continue"""
-        
-        self.fields[field.name] = field.get_form_field(user, required=False, initial=value)
+        self.fields[field_name] = field.get_form_field(user, required=False, initial=value)
         
         ignore_field_value = False
         if self.data and ignore_field_name in self.data:
           ignore_field_value = True
 
         self.fields[ignore_field_name] = IgnoreField(required=False)
-        self.fields[field.name].ignore_field = self[ignore_field_name]
+        self.fields[field_name].ignore_field = self[ignore_field_name]
 
-        self.fields[field.name].label = field.name
-        self.custom_fields[field.name] = field
+        self.fields[field_name].label = field.name
+        self.custom_fields[field_name] = field
 
   def clean(self):
     super(LogItemForm, self).clean()
