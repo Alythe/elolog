@@ -1,6 +1,6 @@
 # Django settings for elolog project.
 import os.path
-from local_settings import DATABASES, EMAIL_BACKEND, STATIC_ROOT, STATIC_URL, ADMINS
+from local_settings import DATABASES, EMAIL_BACKEND, STATIC_ROOT, STATIC_URL, ADMINS, DEVELOPMENT
 
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
 
