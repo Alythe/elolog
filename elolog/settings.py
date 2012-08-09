@@ -1,15 +1,11 @@
 # Django settings for elolog project.
 import os.path
-from local_settings import DATABASES, EMAIL_BACKEND, STATIC_ROOT, STATIC_URL, DEVELOPMENT
+from local_settings import DATABASES, EMAIL_BACKEND, STATIC_ROOT, STATIC_URL, ADMINS
 
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
-
-ADMINS = (
-    # ('Your Name', 'your_email@example.com'),
-)
 
 MANAGERS = ADMINS
 
@@ -162,7 +158,7 @@ EMAIL_HOST = 'localhost'
 DEFAULT_FROM_EMAIL = 'support@elolog.net'
 LOGIN_REDIRECT_URL = '/'
 
-EG_MAX_CUSTOM_FIELDS = 10
+EG_MAX_CUSTOM_FIELDS = 15
 
 DATE_TIME_FORMAT = "%d.%m.%Y %H:%M"
 DATE_FORMAT = "%d.%m.%Y"

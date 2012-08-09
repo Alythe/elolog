@@ -110,7 +110,10 @@ class KDAWidget(MultiWidget):
   def decompress(self, value):
     if value:
       data = value.split('/') 
-      return (data[0], data[1], data[2])
+      if len(data) == 3:
+        return (data[0], data[1], data[2])
+      else:
+        return ("0", "0", "0")
     else:
       return ("0", "0", "0")
 
@@ -142,6 +145,6 @@ class BBEditor(Textarea):
           )
         }
     js = (
-          "cleditor/jquery.cleditor.min.js",
+          "cleditor/jquery.cleditor.js",
           "cleditor/jquery.cleditor.bbcode.min.js",
         )

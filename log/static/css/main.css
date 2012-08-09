@@ -83,3 +83,7 @@ div.imprint a {
 input.ignore {
   display: inline;
 }
+
+.newscontent h2 {
+  font-size: 14px;
+}

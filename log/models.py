@@ -207,7 +207,10 @@ class LogItem(models.Model):
     if elo_field_queryset.count() > 0:
       elo_queryset = self.logcustomfieldvalue_set.filter(custom_field=elo_field_queryset[0])
       if elo_queryset.count() == 1:
-        return int(elo_queryset[0].get_value())
+        try:
+          return int(elo_queryset[0].get_value())
+        except ValueError:
+          return 0
     
     return 0
 
@@ -240,7 +243,7 @@ class LogCustomFieldValue(models.Model):
   _value = models.TextField(db_column='value', blank=True)
 
   def set_value(self, value):
-    self._value = str(value)
+    self._value = unicode(value)
 
   def get_value(self):
     return self._value or ""

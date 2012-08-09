@@ -3,21 +3,20 @@ import datetime
 from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
-import pytz
 
 
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding field 'Log.last_update'
-        db.add_column('log_log', 'last_update',
-                      self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime(1970, 1, 1, 0, 0).replace(tzinfo=pytz.utc), blank=True),
+        # Adding field 'UserProfile.has_donated'
+        db.add_column('log_userprofile', 'has_donated',
+                      self.gf('django.db.models.fields.BooleanField')(default=False),
                       keep_default=False)
 
 
     def backwards(self, orm):
-        # Deleting field 'Log.last_update'
-        db.delete_column('log_log', 'last_update')
+        # Deleting field 'UserProfile.has_donated'
+        db.delete_column('log_userprofile', 'has_donated')
 
 
     models = {
@@ -78,7 +77,7 @@ class Migration(SchemaMigration):
             'text': ('django.db.models.fields.TextField', [], {})
         },
         'log.log': {
-            'Meta': {'object_name': 'Log'},
+            'Meta': {'ordering': "['-last_update']", 'object_name': 'Log'},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'initial_elo': ('django.db.models.fields.PositiveIntegerField', [], {'default': '0'}),
             'initial_games_left': ('django.db.models.fields.PositiveIntegerField', [], {'default': '0'}),
@@ -140,8 +139,12 @@ class Migration(SchemaMigration):
         },
         'log.userprofile': {
             'Meta': {'object_name': 'UserProfile'},
+            'date_format': ('django.db.models.fields.CharField', [], {'default': "'%d.%m.%Y'", 'max_length': '256'}),
+            'has_donated': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'last_activity': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(1970, 1, 1, 0, 0)'}),
+            'last_activity': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2012, 8, 9, 0, 0)'}),
+            'time_format': ('django.db.models.fields.CharField', [], {'default': "'%H:%M'", 'max_length': '256'}),
+            'time_zone': ('django.db.models.fields.CharField', [], {'default': "'Europe/Vienna'", 'max_length': '256'}),
             'user': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['auth.User']", 'unique': 'True'})
         }
     }

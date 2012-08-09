@@ -291,8 +291,12 @@ def delete_item(request, log_id, item_id):
   if not request.user.id == log.user.id:
     return HttpResponseRedirect(reverse('log.views.index'))
 
-  item = log.logitem_set.get(id=item_id)
-  item.delete()
+  # FIXME Do something instead of just failing silently
+  try:
+    item = log.logitem_set.get(id=item_id)
+    item.delete()
+  except ObjectDoesNotExist:
+    pass
 
   return HttpResponseRedirect(reverse('log.views.view', args=[log_id]))
 
@@ -366,7 +370,7 @@ def edit_log(request, log_id=None):
 
 def view_fields(request, log_id):
   if not request.user.is_authenticated():
-    return HttpResponseREdirect(reverse('log.views.index'))
+    return HttpResponseRedirect(reverse('log.views.index'))
 
   log = get_object_or_404(Log, pk=log_id)
 
@@ -612,6 +616,15 @@ def news_comments(request, news_id):
     comment_list = paginator.page(paginator.num_pages)
 
   return render_to_response('news/news_detail.html', RequestContext(request, {'news_item': news, 'comment_list': comment_list, 'form': form}))
+
+def donate(request):
+  if not request.user.is_authenticated():
+    return render_to_response('donate_success.html', RequestContext(request))
+
+  request.user.get_profile().has_donated = True
+  request.user.get_profile().save()
+
+  return render_to_response('donate_success.html', RequestContext(request))
 
 ### MISC Global stats
 def global_stats(request):

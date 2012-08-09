@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% load get_range %}
+
 {% block title %} - View log{% endblock %}
 
 {% block headline %}
@@ -47,7 +49,7 @@
           {% else %}
             This log does not appear on the public list.
           {% endif %}
-          To change this, click "Edit log".
+          To change this, click "Edit log."
         </span>
         {% endif %}
         </form>
@@ -60,7 +62,7 @@
             <h3>Are you sure?</h3>
           </div>
           <div class="modal-body">
-            <p>Do you really want to delete the Elolog for <strong>{{ log.summoner_name }}</strong>?</p>
+            <p>Do you really want to delete the EloLog for <strong>{{ log.summoner_name }}</strong>?</p>
             <p>All your log entries will be lost.</p>
           </div>
           <div class="modal-footer">
@@ -75,7 +77,7 @@
             <h3>Are you sure?</h3>
           </div>
           <div class="modal-body">
-            <p>Do you really want to delete this Elolog entry?</p>
+            <p>Do you really want to delete this EloLog entry?</p>
           </div>
           <div class="modal-footer">
             <button class="btn" data-dismiss="modal">No, cancel</button>
@@ -119,6 +121,32 @@
         </div>
 
         {% if log_item_list %}
+
+        {# PAGINATION #}
+        {% if log_item_list.paginator.num_pages > 1 %}
+        <div class="pages">
+          {% if log_item_list.has_previous %}
+          <a href="?p={{ log_item_list.previous_page_number }}">Previous</a>
+          {% else %}
+          Previous
+          {% endif %}
+          <ul>
+          {% for page in log_item_list.paginator.num_pages|get_range:1 %}
+            {% if page = log_item_list.number %}
+            <li><strong>{{ page }}</strong></li>
+            {% else %}
+            <li><a href="?p={{ page }}">{{ page }}</a></li>
+            {% endif %}
+          {% endfor %}
+           </ul>
+           {% if log_item_list.has_next %}
+           <a href="?p={{ log_item_list.next_page_number }}">Next</a>
+           {% else %}
+           Next
+           {% endif %}
+        </div>
+        {% endif %}
+        {# PAGINATION_END #}        
         <table class="table">
         <thead>
           <tr>
@@ -142,11 +170,6 @@
             {% for value in item.field_values %}
             <td>{{ value|safe }}</td>
             {% endfor %}
-            <!--<td><img src="{{ STATIC_URL }}img/champions/{{ item.champion.image }}"></img></td>
-            <td>
-              <span class={% if item.elo_gain < 0 %} "shade-red" {% else %} "shade-green" {% endif %}>{{ item.elo_gain }}</span>
-            </td>
-            <td>{{ item.text|linebreaks }}</td>-->
             <td>
               {% if not is_public %}
               <div class="btn-group">
