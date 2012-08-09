@@ -117,12 +117,12 @@
 
           {% if is_follower %}
           <a class="btn btn-danger" href="{% url log.views.follow_log log.public_hash %}">
-            <i class="icon-thumbs-down"></i>
+            <i class="icon-eye-close"></i>
             Unfollow
           </a>
           {% else %}
           <a class="btn btn-success" href="{% url log.views.follow_log log.public_hash %}">
-            <i class="icon-thumbs-up"></i>
+            <i class="icon-eye-open"></i>
             Follow
           </a>
           {% endif %}
