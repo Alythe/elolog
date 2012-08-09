@@ -45,6 +45,8 @@ urlpatterns = patterns('',
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
+    url(r'^donate/$', 'log.views.donate'),
+
     url(r'^accounts/', include('registration.backends.default.urls')),
     url(r'^resend_activation/', 'log.views.resend_activation'),
     #url(r'^signup/$', 'log.views.signup'),

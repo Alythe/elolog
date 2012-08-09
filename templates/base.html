@@ -21,18 +21,6 @@
     }
     {% block style %}{% endblock %}
   </style>
-
-  <!--<script type="text/javascript">
-      var _gaq = _gaq || [];
-      _gaq.push(['_setAccount', 'UA-33296346-1']);
-      _gaq.push(['_trackPageview']);
-
-      (function() {
-        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-        })();
-      </script>-->
 </head>
 
 <body>
@@ -80,6 +68,15 @@
             <li><a href="/public/">Public logs</a></li>
             <li><a href="{% url log.views.news %}">News</a></li>
             <li><a href="{% url about %}">About</a></li>
+            <li><a href="http://flattr.com/thing/783414/EloLog" target="_blank">
+              <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" border="0" /></a></li>
+            <li><form action="https://www.paypal.com/cgi-bin/webscr" method="post" style="padding: 5px 10px 11px; margin: 0; height: 19px;">
+                <input type="hidden" name="cmd" value="_s-xclick">
+                <input type="hidden" name="hosted_button_id" value="YPCTNFUTA5L8C">
+                <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+                <img alt="" border="0" src="https://www.paypalobjects.com/de_DE/i/scr/pixel.gif" width="1" height="1">
+                </form>
+             </li>
           </ul>
         </div>
       </div>
@@ -92,19 +89,6 @@
         <div class="content">
           <div class="page-header">
             {% block headline %}{% endblock %}
-          </div>
-          <div class="ad">
-          <script type="text/javascript"><!--
-            google_ad_client = "ca-pub-2248304763819491";
-            /* Horizontal */
-            google_ad_slot = "5873791829";
-            google_ad_width = 468;
-            google_ad_height = 60;
-            //-->
-          </script>
-          <script type="text/javascript"
-            src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
-          </script>
           </div>
         {% block content %}{% endblock %}
         </div>

@@ -616,6 +616,15 @@ def news_comments(request, news_id):
 
   return render_to_response('news/news_detail.html', RequestContext(request, {'news_item': news, 'comment_list': comment_list, 'form': form}))
 
+def donate(request):
+  if not request.user.is_authenticated():
+    return render_to_response('donate_success.html', RequestContext(request))
+
+  request.user.get_profile().has_donated = True
+  request.user.get_profile().save()
+
+  return render_to_response('donate_success.html', RequestContext(request))
+
 ### MISC Global stats
 def global_stats(request):
   if not request.user.is_authenticated() or not request.user.is_staff:

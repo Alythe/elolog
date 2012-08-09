@@ -157,7 +157,7 @@ EMAIL_HOST = 'localhost'
 DEFAULT_FROM_EMAIL = 'support@elolog.net'
 LOGIN_REDIRECT_URL = '/'
 
-EG_MAX_CUSTOM_FIELDS = 10
+EG_MAX_CUSTOM_FIELDS = 15
 
 DATE_TIME_FORMAT = "%d.%m.%Y %H:%M"
 DATE_FORMAT = "%d.%m.%Y"

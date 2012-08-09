@@ -13,5 +13,7 @@
     <input type="submit" class="btn btn-primary" value="Sign in">
     <a href="{% url django.contrib.auth.views.password_reset %}">I forgot my password</a> - 
     <a href="{% url log.views.resend_activation %}">I did not receive my activation mail</a>
+    <br/>
+    <a href="{% url registration_register %}">Create an account</a>
   </form>
 {% endblock %}

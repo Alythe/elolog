@@ -71,6 +71,7 @@ class UserProfile(models.Model):
   date_format = models.CharField(max_length=256, choices=DATE_FORMAT_CHOICES, default='%d.%m.%Y')
   time_format = models.CharField(max_length=256, choices=TIME_FORMAT_CHOICES, default='%H:%M')
   time_zone = models.CharField(max_length=256, choices=TIME_ZONE_CHOICES, default=settings.TIME_ZONE)
+  has_donated = models.BooleanField(default=False)
 
   def update_activity(self):
     self.last_activity = timezone.now()
