@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load get_range %}
+{% load render_bb %}
 
 {% block title %} - View log{% endblock %}
 
@@ -8,12 +9,18 @@
 {% endblock %}
 
 {% block content %}
+        {% if log.description.strip != "" %}
+        <p>{{ log.description|render_bb }}</p>
+        <hr/>
+        {% endif %}
         <ul class="flat-list">
           <li>Current Elo: <strong>{{ log.current_elo }}</strong></li>
           <li>Games played: <strong>{{ log.total_games }} ({{ log.games_won }}/{{ log.games_lost }}/{{log.games_left }})</strong></li>
           <li>Win/Loss-Ratio: <strong>{{ log.win_loss_ratio }}</strong>
+          <li>Follower: <strong>{{ log.get_follower_count }}</strong>
         </ul>
         <hr/>
+
         {% if not log_item_list %}
         {% if not is_public %}
         <div class="alert alert-success">
@@ -105,14 +112,28 @@
             <i class="icon-list-alt"></i>
             Show graphs
           </a>
+
+          {% if is_public and request.user.id != log.user.id %}
+
+          {% if is_follower %}
+          <a class="btn btn-danger" href="{% url log.views.follow_log log.public_hash %}">
+            <i class="icon-thumbs-down"></i>
+            Unfollow
+          </a>
+          {% else %}
+          <a class="btn btn-success" href="{% url log.views.follow_log log.public_hash %}">
+            <i class="icon-thumbs-up"></i>
+            Follow
+          </a>
+          {% endif %}
+          {% endif %}
+
           {% if not is_public %}
           <a class="btn" href="export">
             <i class="icon-share"></i>
             Export as CSV
           </a>
-          {% endif %}
 
-          {% if not is_public %}
           <a class="btn btn-danger pull-right" data-toggle="modal" href="#md-confirm-delete">
             <i class="icon-trash icon-white"></i>
             Delete log

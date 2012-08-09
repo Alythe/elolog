@@ -21,7 +21,12 @@ padding: 0;
 h2 img {
   margin-right: 10px;
   padding-bottom: 10px;
-}
+  }
+
+#log-table tr:hover {
+  cursor: pointer;
+  cursor: hand
+  }
 {% endblock %}
 
 {% block headline %}<h1>EloLog <small>Home</small></h1>{% endblock %}
@@ -42,6 +47,41 @@ h2 img {
 
             <a href="{% url log.views.news %}">View more news</a>
           </div>
+
+          {% if following_logs.count > 0 %}
+          <div class="span5">
+            <h2><img src="{{ STATIC_URL }}img/icons/glyphicons_343_thumbs_up.png" alt="Following"></img>Logs you follow</h2>
+            <table id="log-table" class="table">
+              <thead>
+                <tr>
+                  <th>Log</th><th>Last update</th>
+                </tr>
+              </thead>
+              <tbody>
+              {% for log in following_logs %}
+              <tr id="{{ log.log.public_hash }}">
+                <td>
+                  {% if log.is_new %}
+                  <img class="icon-star"></img>
+                  {% endif %}
+                  {{ log.log.summoner_name }} ({{ log.log.user.username }})
+                </td>
+                <td>{{ log.log.last_update }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+            </table>
+          </div>
+          {% endif %}
+
+          <script type="text/javascript">
+          $(document).ready(function()
+          {
+            $('#log-table > tbody > tr').click(function() {
+              window.location.href = '/public/' + this.id;
+            });
+          });
+      </script>
         
           <div class="span5"> 
             <h2><img src="{{ STATIC_URL }}img/icons/glyphicons_041_charts.png" alt="Statistics"></img>Statistic</h2>

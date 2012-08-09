@@ -7,6 +7,7 @@ from django.shortcuts import render_to_response, get_object_or_404
 
 from log.fields import IgnoreField
 from log.custom_fields import presets
+from log.widgets import BBEditor
 
 class AlertDivErrorList(ErrorList):
   def __unicode__(self):    
@@ -19,6 +20,12 @@ class AlertDivErrorList(ErrorList):
     return u'<div class="alert alert-error">%s</div>' % '<br/>'.join([u'<span>%s</span>' % e for e in self])
 
 class LogForm(ModelForm):
+  description = CharField(
+      max_length = 500,
+      widget = BBEditor,
+      error_messages={'max_length': u'Please write no more than 1000 characters!'}
+  )
+
   def __init__(self, *args, **kwargs):
     super(LogForm, self).__init__(*args, **kwargs)
     self.presets = presets.get_preset_data()
@@ -98,7 +105,7 @@ class LogForm(ModelForm):
 
   class Meta:
     model = Log
-    fields = ('summoner_name', 'region', 'initial_elo', 'initial_games_won', 'initial_games_lost', 'initial_games_left', 'show_on_public_list')
+    fields = ('summoner_name', 'description', 'region', 'initial_elo', 'initial_games_won', 'initial_games_lost', 'initial_games_left', 'show_on_public_list')
 
 class LogItemForm(ModelForm):
   def __init__(self, data=None, user=None, *args, **kwargs):

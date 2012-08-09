@@ -13,6 +13,7 @@ class LogItemAdmin(admin.TabularInline):
 
 class LogAdmin(admin.ModelAdmin):
   inlines = [ LogItemAdmin, ]
+  search_fields = [ 'summoner_name', ]
 
 class CommentAdmin(admin.TabularInline):
   model = Comment

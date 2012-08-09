@@ -1,7 +1,7 @@
 # Create your views here.
 
 from django.http import HttpResponse, HttpResponseRedirect
-from log.models import Log, LogItem, News, Comment, OUTCOME, UserProfile, StatisticEntry, LogCustomField
+from log.models import Log, LogItem, News, Comment, OUTCOME, UserProfile, StatisticEntry, LogCustomField, LogFollower
 from log.forms import LogForm, LogItemForm, CommentForm, ResendActivationForm, CustomFieldForm, UserSettingsForm
 from log.forms import AlertDivErrorList
 from log.custom_fields.types import FieldTypes
@@ -18,6 +18,7 @@ from registration.models import RegistrationProfile
 from django.contrib.sites.models import Site
 from django.conf import settings
 from django.utils import timezone
+from django.db.models import Count
 
 from random import random
 import csv
@@ -25,6 +26,7 @@ import unicodedata
 import datetime
 import time
 import re
+import logging
 
 ### LOG Viewing ###
 def index(request):
@@ -63,17 +65,20 @@ def index(request):
     c['last_login_str'] = time.strftime("%s %s" % (request.user.get_profile().date_format,
                                                  request.user.get_profile().time_format), 
                                                  request.user.last_login.timetuple())
+    c['following_logs'] = request.user.follower.all().order_by('log__last_update')
 
   return render_to_response('home.html', c)
 
-def logs(request, public=False, page=0):
+def logs(request, public=False, page=0, order=None):
   if not request.user.is_authenticated() and not public:
     return HttpResponseRedirect(reverse(index))
-    
+  
   if not public:
     log_list_all = Log.objects.filter(user__id__exact=request.user.id)
+    log_list_popular = None
   else:
-    log_list_all = Log.objects.filter(public__exact=True, show_on_public_list__exact=True)#.order_by('-last_update')
+    log_list_all = Log.objects.filter(public__exact=True, show_on_public_list__exact=True)
+    log_list_popular = Log.objects.filter(public__exact=True, show_on_public_list__exact=True).annotate(follower_num=Count('follower')).filter(follower_num__gt=0).order_by('-follower_num')[:5]
 
   paginator = Paginator(log_list_all, 25)
   page = request.GET.get('p')
@@ -85,7 +90,7 @@ def logs(request, public=False, page=0):
   except EmptyPage:
     log_list = paginator.page(paginator.num_pages)
 
-  return render_to_response('logs.html', RequestContext(request, {'log_list': log_list, 'is_public': public}))
+  return render_to_response('logs.html', RequestContext(request, {'log_list': log_list, 'popular_log_list': log_list_popular, 'is_public': public}))
 
 def view(request, log_id, public=False):
 
@@ -135,7 +140,12 @@ def view(request, log_id, public=False):
       item.elo_gain = elo_gain[size - 1 - index]
     index += 1
 
-  paginator = Paginator(log_item_list_r, request.user.get_profile().logitems_per_page)
+  logitems_per_page = 25
+
+  if request.user.is_authenticated():
+    logitems_per_page = request.user.get_profile().logitems_per_page
+  
+  paginator = Paginator(log_item_list_r, logitems_per_page)
   page = request.GET.get('p')
 
   try:
@@ -163,12 +173,21 @@ def view(request, log_id, public=False):
         else:
           item.field_values.append(field.get_form_field(form_user).render(field_value.get_value()))
 
+  # check if the currently logged in user is a follower
+  is_follower = False
+  if request.user.is_authenticated():
+    is_follower = log.has_follower(request.user)
+
+    if is_follower:
+      log.update_follower_check_date(request.user)
+
   c = RequestContext(request, {
     'log': log,
     'log_item_list': log_item_list,
     'field_list': field_list,
     'user': request.user.id,
-    'is_public': public
+    'is_public': public,
+    'is_follower': is_follower
   })
 
   return render_to_response('view.html', c) 
@@ -212,6 +231,29 @@ def graph_log(request, log_id, public=False):
       data = ""
 
   return render_to_response('graph.html', RequestContext(request, {'log': log, 'js_data': data, 'log_empty': log_empty, 'log_id': log_id, 'is_public': public, 'has_graph': has_elo_field}))
+
+def follow_log(request, log_id):
+  if not request.user.is_authenticated():
+    return render_to_response('follow_not_loggedin.html', RequestContext(request))
+    
+  log = get_object_or_404(Log, public_hash__exact=log_id)
+   
+  # safety checks
+  # only allow following of public logs
+  if not log.public:
+    return HttpResponseRedirect(reverse('log.views.index'))
+
+  # do not allow following of own logs
+  if request.user.id == log.user.id:
+    return HttpResponseRedirect(reverse('log.views.index'))
+
+  # user is already following this log, he wants to unfollow
+  if log.has_follower(request.user):
+    log.remove_follower(request.user)
+  else:
+    log.add_follower(request.user)
+
+  return HttpResponseRedirect(reverse('log.views.view', args=[log_id]))
 
 def export_log(request, log_id):
   if not request.user.is_authenticated():
@@ -279,6 +321,10 @@ def unpublish(request, log_id):
 
   log.public = False
   log.save()
+
+  # as the log is private now, remove all the followers
+  log.logfollower_set.all().delete()
+
   return HttpResponseRedirect(reverse('log.views.view', args=[log_id]))
 
 ### LOG Management

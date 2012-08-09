@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load get_range %}
 {% load pretty_format_date %}
-{% block title %} - Home{% endblock %}
+{% block title %} - Logs{% endblock %}
 
 {% block style %}
 
@@ -33,6 +33,41 @@
         </a>
         {% endif %}
 
+        {% if is_public and popular_log_list.count > 0 %}
+        <h2>Popular logs</h2>
+        <table id="log-table" class="table">
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Summoner/Team</th>
+              <th>Region</th>
+              <th>Elo</th>
+              <th>Games</th>
+              <th>Ratio</th>
+              <th>Last update</th>
+              <th>Follower</th>
+            </tr>
+          </thead>
+          <tbody>
+          {% for log in popular_log_list %}
+            <tr id="{{ log.public_hash }}">
+              <td>{{ log.user.username }}</td>
+              <td>{{ log.summoner_name }}</td>
+              <td>{{ log.get_region_display }}</td>
+              <td>{{ log.current_elo }}</td>
+              <td>{{ log.total_games }} ({{ log.games_won }}/{{ log.games_lost }}/{{log.games_left }})</td>
+              <td>{{ log.win_loss_ratio }}</td>
+              <td>{{ log.last_update|pretty_format_date:log.user }}</td>
+              <td>{{ log.get_follower_count }}</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+        {% endif %}
+
+        {% if is_public %}
+        <h2>All logs</h2>
+        {% endif %}
         {# PAGINATION #}
         {% if log_list.paginator.num_pages > 1 %}
         <div class="pages">
@@ -71,6 +106,7 @@
             <th>Games</th>
             <th>Ratio</th>
             <th>Last update</th>
+            <th>Follower</th>
           </tr>
         </thead>
         <tbody>
@@ -87,6 +123,7 @@
             <td>{{ log.total_games }} ({{ log.games_won }}/{{ log.games_lost }}/{{log.games_left }})</td>
             <td>{{ log.win_loss_ratio }}</td>
             <td>{{ log.last_update|pretty_format_date:log.user }}</td>
+            <td>{{ log.get_follower_count }}</td>
           </tr>
           {% endfor %}
         </tbody>

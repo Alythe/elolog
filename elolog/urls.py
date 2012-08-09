@@ -26,6 +26,7 @@ urlpatterns = patterns('',
     
     url(r'^public/(?P<log_id>[a-fA-F\d]{10})/$', 'log.views.view', {'public': True}),
     url(r'^public/(?P<log_id>[a-fA-F\d]{10})/graph$', 'log.views.graph_log', {'public': True}),
+    url(r'^public/(?P<log_id>[a-fA-F\d]{10})/follow$', 'log.views.follow_log'),
 
     url(r'^logs/(?P<log_id>\d+)/edit/(?P<item_id>\d+)/$', 'log.views.edit_item'),
     url(r'^logs/(?P<log_id>\d+)/delete/(?P<item_id>\d+)/$', 'log.views.delete_item'),

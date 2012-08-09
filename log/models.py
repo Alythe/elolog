@@ -101,6 +101,7 @@ class Log(models.Model):
   user = models.ForeignKey(User)
   summoner_name = models.CharField(max_length = 48)
   region = models.CharField(max_length=4, choices=REGION_CHOICES)
+  description = models.CharField(max_length=500, default="")
   initial_elo = models.PositiveIntegerField(default=0)
   initial_games_won = models.PositiveIntegerField(default=0)
   initial_games_lost = models.PositiveIntegerField(default=0)
@@ -109,9 +110,31 @@ class Log(models.Model):
   public_hash = models.CharField(max_length = 10, default = "", blank=True)
   show_on_public_list = models.BooleanField(default=False)
   last_update = models.DateTimeField('date updated', default=datetime.datetime(1970,1,1, tzinfo=pytz.utc), blank=True)
+  follower = models.ManyToManyField(User, through='LogFollower', related_name='logfollower')
 
   class Meta:
     ordering = ['-last_update']
+
+  def has_follower(self, user):
+    return self.logfollower_set.filter(user=user).exists()
+
+  def add_follower(self, user):
+    LogFollower(user=user, log=self).save()
+
+  def remove_follower(self, user):
+    self.logfollower_set.filter(user=user).delete()
+
+  def update_follower_check_date(self, user):
+    try:
+      follower = self.logfollower_set.get(user=user)
+    except ObjectDoesNotExist:
+      return
+
+    follower.date_checked = timezone.now()
+    follower.save()
+
+  def get_follower_count(self):
+    return self.logfollower_set.all().count() or 0
 
   def update_last_update(self):
     try:
@@ -172,11 +195,16 @@ class Log(models.Model):
   def __unicode__(self):
     return self.summoner_name
 
+class LogFollower(models.Model):
+  user = models.ForeignKey(User, related_name='follower')
+  log = models.ForeignKey(Log)
+  date_checked = models.DateTimeField(auto_now_add=True)
+
+  def is_new(self):
+    return self.log.last_update > self.date_checked
+
 class LogItem(models.Model):
   log = models.ForeignKey(Log)
-  #champion = models.ForeignKey(Champion)
-  #elo = models.IntegerField()
-  #text = models.TextField()
   outcome = models.IntegerField(default=0, choices=GAME_OUTCOME_CHOICES)
   date = models.DateTimeField('date created', auto_now_add=True, blank=True)
 

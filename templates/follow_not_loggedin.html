@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %} - Not logged in{% endblock %}
+
+{#{% block page_width %}span8 offset2{% endblock %}#}
+
+{% block content %}
+        <div class="page-header">
+          <h1><img src="{{ STATIC_URL }}img/icons/glyphicons_195_circle_info.png" alt="Imprint"/>Sign up <small>EloLog</small></h1>
+        </div>
+        
+        <p>You need to be logged in to follow this log. Start using EloLog now by creating an account <a href="{% url registration_register %}">here</a>! It's free and a matter of seconds.</p>
+
+{% endblock %}

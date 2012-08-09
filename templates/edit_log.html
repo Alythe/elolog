@@ -5,6 +5,7 @@
   width: 30px;
 }
 {% endblock %}
+{% block header %}{{ form.media }}{% endblock %}
 
 {% block headline %}
 <h1>{{ log.summoner_name }}</h1>
@@ -32,6 +33,12 @@
             {{ form.summoner_name.errors }}
             <label for="id_summoner_name">Summoner Name:</label>
             {{ form.summoner_name }}
+          </div>
+
+          <div class="fieldWrapper">
+            {{ form.description.errors }}
+            <label for="id_description">Description:</label>
+            {{ form.description }}
           </div>
 
           <div class="fieldWrapper">
