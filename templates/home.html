@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load pretty_format_date %}
 {% block title %} - Home{% endblock %}
 
 {% block style %}
@@ -66,7 +67,7 @@ h2 img {
                   {% endif %}
                   {{ log.log.summoner_name }} ({{ log.log.user.username }})
                 </td>
-                <td>{{ log.log.last_update }}</td>
+                <td>{{ log.log.last_update|pretty_format_date:user }}</td>
               </tr>
               {% endfor %}
             </tbody>

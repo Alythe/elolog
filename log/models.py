@@ -22,6 +22,7 @@ REGION_CHOICES = (
   ('CH', 'China'),
   ('KO', 'Korea'),
   ('SEA', 'Southeast Asia'),
+  ('BR', 'Brazil'),
 )
 
 DATE_FORMAT_CHOICES = (

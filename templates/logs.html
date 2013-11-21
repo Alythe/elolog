@@ -57,7 +57,7 @@
               <td>{{ log.current_elo }}</td>
               <td>{{ log.total_games }} ({{ log.games_won }}/{{ log.games_lost }}/{{log.games_left }})</td>
               <td>{{ log.win_loss_ratio }}</td>
-              <td>{{ log.last_update|pretty_format_date:log.user }}</td>
+              <td>{{ log.last_update|pretty_format_date:user }}</td>
               <td>{{ log.get_follower_count }}</td>
             </tr>
           {% endfor %}
@@ -122,7 +122,7 @@
             <td>{{ log.current_elo }}</td>
             <td>{{ log.total_games }} ({{ log.games_won }}/{{ log.games_lost }}/{{log.games_left }})</td>
             <td>{{ log.win_loss_ratio }}</td>
-            <td>{{ log.last_update|pretty_format_date:log.user }}</td>
+            <td>{{ log.last_update|pretty_format_date:user }}</td>
             <td>{{ log.get_follower_count }}</td>
           </tr>
           {% endfor %}
